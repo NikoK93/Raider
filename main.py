@@ -14,39 +14,24 @@ def click_element(x, y):
     pyautogui.click(x, y)
 
 
-def go_one_back():
-    pyautogui.press('escape')
+def go_to_base():
+    '''
+    Return the user from any point to the base of the game. 
+    '''
+    while (True):
+        locate_and_click('rsl')
+        if pyautogui.locateOnScreen('./images/exit_game.png', confidence=0.7) != None:
+            pyautogui.press('esc')
+            break
+        else:
+            pyautogui.press('esc')
 
-def get_market():
-    pyautogui.locateOnScreen('./images/market.png')
 
-#go_one_back()
 
-def get_rewards():
-    
-    if pyautogui.locateOnScreen('./images/shop_free.png') != None:
-        shop_location = pyautogui.locateOnScreen('./images/shop_free.png')
-        lock = pyautogui.center(shop_location)
-        click_element(lock[0], lock[1])
-        time.sleep(2)
-        if pyautogui.locateOnScreen('./images/mystery_shard.png') != None:
-            # Get mystery shard if available
-            mystery_location = pyautogui.locateOnScreen('./images/mystery_shard.png')
-            lock = pyautogui.center(mystery_location)
-            click_element(lock[0], lock[1])
-            time.sleep(2)
-            claim_location = pyautogui.locateOnScreen('./images/claim.png')
-            lock = pyautogui.center(claim_location)
-            click_element(lock[0], lock[1])
-
-        elif pyautogui.locateOnScreen('./images/limited_offer.png') != None:
-            offer_location = pyautogui.locateOnScreen('./images/limited_offer.png')
-            lock = pyautogui.center(offer_location)
-            click_element(lock[0], lock[1])
-
-#get_rewards()
-def match_all(image, template, threshold=0.8, debug=False, color=(0, 0, 255)):
+def match_all(pic, threshold=0.8, debug=False, color=(0, 0, 255)):
         """ Match all template occurrences which have a higher likelihood than the threshold """
+        image = pyautogui.screenshot()
+        template = cv.imread('./images/{pic}'.format(screenshot_img))
         width, height = template.shape[:2]
         match_probability = cv.matchTemplate(image, template, cv.TM_CCOEFF_NORMED)
         match_locations = np.where(match_probability >= threshold)
@@ -58,6 +43,7 @@ def match_all(image, template, threshold=0.8, debug=False, color=(0, 0, 255)):
 
             if debug:
                 cv.rectangle(image, (x, y), (x + width, y + height), color, 1)
+        print(locations)
         return locations
 
 
@@ -88,6 +74,15 @@ def locate_and_click(image, conf=0.8, x_adj=0, y_adj=0, wait_time = 3):
         click_element(lock[0] + x_adj, lock[1] + y_adj)
         time.sleep(wait_time)
 
+def locate_all_and_click(image, conf=0.8, x_adj=0, y_adj=0, wait_time = 3):
+    if pyautogui.locateAllOnScreen(f'./images/{image}.png', confidence=conf) != None:
+        location = pyautogui.locateAllOnScreen(f'./images/{image}.png', confidence=conf)
+        for loc in location:  
+            lock = pyautogui.center(loc)
+            click_element(lock[0] + x_adj, lock[1] + y_adj)
+            locate_and_click('get_mystery', wait_time=0, conf=0.7)
+            #time.sleep(wait_time)
+
 def get_position(image, conf=0.8, x_adj=0, y_adj=0):
     if pyautogui.locateOnScreen(f'./images/{image}.png', confidence=conf) != None:
         location = pyautogui.locateOnScreen(f'./images/{image}.png', confidence=conf)
@@ -103,22 +98,37 @@ def location_on_screen(image, conf=0.8):
 
 
 def market_refresh():
-    if pyautogui.locateOnScreen('./images/market_refresh.png', confidence=0.6) != None:
-        locate_and_click("market_refresh")
+    #if pyautogui.locateOnScreen('./images/market_refresh.png', confidence=0.6) != None:
+    locate_and_click("market_refresh", conf=0.6)
+    match_all('get_mystery')
+    click_and_drag('market_drag',  x_adj=0, y_adj=-200)
+    #locate_all_and_click('mystery_shard_market')
 
 def get_rewards():
     
     locate_and_click('shop_free')
-
     locate_and_click('limited_offer')
-
     locate_and_click('small_pack')
-
     locate_and_click('claim_free_gift')
 
-    while location_on_screen('home_base') == False:
-        go_one_back()
+def play_time_rewards():
+    '''
+    Collects all playtime rewards
+    '''
+    locate_and_click('playtime')
+    loc = pyautogui.locateOnScreen('./images/playtime_1.png', confidence=0.7)
+    location = pyautogui.center(loc)
+    click_element(location[0], location[1])
+
+    pct = 1.08
+    time.sleep(2)
+    for i in range(5):
+        click_element((location[0] * pct) , location[1])
+        pct += 0.08
         time.sleep(2)
+
+    go_to_base()
+
 
 def to_clan_boss():
 
@@ -296,9 +306,12 @@ def clanboss():
 #locate_and_click('clan_boss_battle', conf=0.9)
 #locate_and_click("start_on_auto_ON", x_adj=-100)
 
-clanboss()
+#clanboss()
 #get_rewards()
-#location_on_screen('home_base')
+##location_on_screen('home_base')
 
 #market_refresh()
+
+play_time_rewards()
+#go_to_base()
 #locate_and_click("market_refresh", 0.5)
