@@ -1,3 +1,4 @@
+from numpy.lib.polynomial import _polyint_dispatcher
 import pyautogui
 import cv2 as cv
 from PIL import ImageGrab
@@ -11,7 +12,9 @@ from support_functions import get_difference
 
 from windowcapture import WindowCapture
 from vision import Vision
-
+import pytesseract
+tes_path = pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+import timeit
 
 
 screenWidth, screenHeight = pyautogui.size()
@@ -42,8 +45,6 @@ def open_raid():
 
     Center_x = x + (w/2)
     Center_y = y + (h/2)
-
-    #click_element(Center_x, Center_y)
 
     return Center_x, Center_y
 
@@ -171,23 +172,47 @@ def find_images(image):
     wincap = WindowCapture('Raid: Shadow Legends')
     
     #vision = Vision()
+    
+    black_list = []
 
     while(True):
 
         time.sleep(1)
         # get an updated image of the game
         screenshot = wincap.get_screenshot()
-
+        
         # display the processed image
-        points = vision_chracters.find(screenshot, 0.8, 'rectangles')
-        try:
-            x, y = points[0]
-            #if points != None:
+        
+        points, location = vision_chracters.find(screenshot, 0.5, 'rectangles')
+        #print(pytesseract.image_to_string(points))
+        #print(points, location)
+
+        if location:
+
+            # get's screen position
+            x, y = location[0][0], location[0][1]
             x_, y_ = wincap.get_screen_position((x, y))
+            # makes a screenshot based on the position
+            im = pyautogui.screenshot(region=(x_, y_, location[0][2], location[0][3]))
+
+            # ocr the text from the image
+            text = pytesseract.image_to_string(im)
+            
+            if text not in black_list:
+                pyautogui.moveTo(x_+800, y_+50)
+            #print(text)
+            
+        '''
+        try:
+            #x, y = points[0]
+            #if points != None:
+            #x_, y_ = wincap.get_screen_position((x, y))
             #adjusted_click(x, y)
             click_element(x_, y_)
         except:
             print('No points found...')
+
+        '''
         #points = vision_gunsnbottle.find(screenshot, 0.7, 'points')
         #cv.imshow('Computer Vision', screenshot)
         # debug the loop rate
@@ -203,8 +228,8 @@ def find_images(image):
 
 def market_refresh():
     
-    locate_and_click("market_refresh", conf=0.6)
-    find_images('1')
+    #locate_and_click("market_refresh", conf=0.6)
+    find_images('test_4')
 
     #locate_all_and_click('mystery_shard_market')
     #match_all('get_mystery')
@@ -212,7 +237,7 @@ def market_refresh():
     #locate_all_and_click('mystery_shard_market')
 
     #go_to_base()
-market_refresh()
+#market_refresh()
 
 def get_mine_gems():
     locate_and_click('mine')
@@ -264,12 +289,9 @@ def to_minotaur(repeat=1):
     pyautogui.dragTo(mouse_position[0]- 400, mouse_position[1], duration=5)
     locate_and_click('minotaur', 0.8)
 
-    mouse_position = pyautogui.position()
-    pyautogui.dragTo(mouse_position[0], mouse_position[1] - 800, duration=4)
+    for i in range(100):
+        pyautogui.scroll(-1)
 
-    pyautogui.moveTo(CENTER_POSITION)
-    mouse_position = pyautogui.position()
-    pyautogui.dragTo(mouse_position[0], mouse_position[1] - 600, duration=5)
     
     x,y = CENTER_POSITION
     time.sleep(1)
@@ -291,7 +313,37 @@ def to_minotaur(repeat=1):
                 go_to_base()
                 break
     
+def to_dragon(repeat=1):
 
+    locate_and_click('rsl')
+    # Battle location
+    adjusted_click(505.0, 310.5)
+
+    locate_and_click('dungeons', 0.7)
+
+    mouse_position = pyautogui.position()
+    pyautogui.dragTo(mouse_position[0]- 1000, mouse_position[1], duration=5)
+    locate_and_click('dragon', 0.8)
+
+    for i in range(100):
+        pyautogui.scroll(-1)
+
+    locate_and_click('dragon_25', 1)
+
+    locate_and_click('dragon_start')
+
+    while repeat >= 1:
+        time.sleep(2)
+        if pyautogui.locateOnScreen('./images/victory_general.png') == None:
+            print(f'Waiting for game to finish, round {repeat}')
+        else:
+            repeat -= 1
+            if repeat >= 1:
+                locate_and_click('replay_mino')
+            else:
+                print('Finished games')
+                go_to_base()
+                break
 
 def to_clan_boss(difficulty = 'UNM'):
 
@@ -344,31 +396,51 @@ def to_leveling():
 
 def arena_fight():
     
-    if pyautogui.locateOnScreen('./images/classic_arena_battle.png') != None:
+    if pyautogui.locateOnScreen('./images/classic_arena_battle.png', confidence=0.8) != None:
         locate_and_click('classic_arena_battle')
+        if pyautogui.locateOnScreen('./images/confirm_arena_token.png') != None:
+            locate_and_click("confirm_arena_token")
+            locate_and_click('classic_arena_battle')
+
         locate_and_click('classic_arena_start')
+        start = time.time()
         while (True):
             time.sleep(2)
-            if pyautogui.locateOnScreen('./images/victory.png') == None:
-                print('Waiting')
-
+            if pyautogui.locateOnScreen('./images/defeat.png') != None:
+                print('Lost game, regresing list')
+                pyautogui.press('esc')
+                time.sleep(1)
+                locate_and_click('refresh_arena_classic')
+               
+                break
+            elif pyautogui.locateOnScreen('./images/victory.png') == None:
+                end = time.time()
+                time_elapsed = end - start
+                if time_elapsed > 500:
+                    break
+                print('Waiting',(time_elapsed))
             # Need to create a blacklist system for lost matches. 
-            elif pyautogui.locateOnScreen('./images/defeat.png') != None:
-                print('Waiting')
+
             else:
                 print('game finished')
+                pyautogui.press('esc')
                 break
-        pyautogui.press('esc')
     else:
         return False
 
 def roam_and_fight():
     
+
     while (True):
         if arena_fight() == False:
+
             pyautogui.moveTo(CENTER_POSITION)
             mouse_position = pyautogui.position()
-            pyautogui.dragTo(mouse_position[0], mouse_position[1] - 600, duration=5)
+            pyautogui.dragTo(mouse_position[0], mouse_position[1] - 200, duration=2)
+
+
+    for i in range(100):
+        pyautogui.scroll(-1)
 
 
 def go_to_tavern():
@@ -414,16 +486,29 @@ def daily_quests_collect():
         locate_and_click('claim_daily')
 
 
+def daily_quests():
+
+    go_to_arena()
+
+    #go_to_tavern()
+
 def routine():
 
-    #get_mine_gems()
+    get_mine_gems()
 
-    #get_rewards()
+    get_rewards()
 
-    #play_time_rewards()
+    play_time_rewards()
 
     daily_quests_collect()
-#routine()
+
+
+
+#daily_quests()
+#from arena import Arena
+#arena = Arena()
+
+#arena.go_to_arena()
 
 #get_difference()
 #go_to_tavern()
@@ -432,7 +517,8 @@ def routine():
 #to_clan_boss('NM')
 #to_minotaur(repeat=1)
 #go_to_base()
-#to_minotaur(repeat=1)
+#to_minotaur(repeat=30)
+#to_dragon()
 #go_to_arena()
 
 #locate_and_click('mino_15', x_adj=-200, conf=0.9)

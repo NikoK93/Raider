@@ -52,7 +52,8 @@ class Vision:
         # "Relative difference between sides of the rectangles to merge them into a group."
         rectangles, weights = cv.groupRectangles(rectangles, groupThreshold=1, eps=0.5)
         #print(rectangles)
-
+        
+        location = []
         points = []
         if len(rectangles):
             #print('Found needle.')
@@ -65,6 +66,7 @@ class Vision:
             # Loop over all the rectangles
             for (x, y, w, h) in rectangles:
 
+                location.append((x, y, w, h))
                 # Determine the center position
                 center_x = x + int(w/2)
                 center_y = y + int(h/2)
@@ -89,4 +91,4 @@ class Vision:
             #cv.waitKey()
             #cv.imwrite('result_click_point.jpg', haystack_img)
 
-        return points
+        return points, location

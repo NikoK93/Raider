@@ -35,3 +35,16 @@ def get_difference():
         time.sleep(2)
         difference = center[0] - mouse_location[0], center[1] - mouse_location[1]
         print(difference)
+
+def click_element(x, y):
+    pyautogui.click(x, y)
+
+def locate_and_click(image, conf=0.8, x_adj=0, y_adj=0, wait_time = 3):
+    for i in range(5):
+        print(f'Trying to locate {image}...{i}')
+        if pyautogui.locateOnScreen(f'./images/{image}.png', confidence=conf) != None:
+            location = pyautogui.locateOnScreen(f'./images/{image}.png', confidence=conf)
+            lock = pyautogui.center(location)
+            click_element(lock[0] + x_adj, lock[1] + y_adj)
+            time.sleep(wait_time)
+            break
