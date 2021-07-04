@@ -17,7 +17,7 @@ tes_path = pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-
 import timeit
 import logging
 from PIL import Image
-
+import digit_recognition
 screenWidth, screenHeight = pyautogui.size()
 
 GAME_RESOLUTION = (1280, 720)
@@ -198,17 +198,25 @@ def find_images(image):
             im = pyautogui.screenshot(region=(x_, y_, location[0][2], location[0][3]))
 
             #print(type(im))
-            image_data = np.asarray(im)
-            img_1 = cv.resize(image_data, None, fx=2, fy=2, interpolation=cv.INTER_CUBIC)
+            #image_data = np.asarray(im)
+            #img_1 = cv.resize(image_data, None, fx=2, fy=2, interpolation=cv.INTER_CUBIC)
             #img_2 = cv.threshold(img_1, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)[1]
             #print(type(img_2))
             
             #thresh = cv.threshold(image_data,0,255,cv.THRESH_BINARY_INV + cv.THRESH_OTSU)[1]
             # ocr the text from the image
-            text = pytesseract.image_to_string(img_1,  lang='eng',
-                    config='--psm 13 --oem 3 -c tessedit_char_whitelist=0123456789')
+            text = pytesseract.image_to_string(im,  lang='eng')
+            num = [el for el in text if el.isdigit()]
             #logging.warning(text)
-            print(text)
+            if num:
+                if int(num[0]) == 1:
+                    return num, x_, y_
+                    
+
+
+            #deselect champions by static position
+
+            #print(num)
             #if text not in black_list:
             #    pyautogui.moveTo(x_+800, y_+50)
             #print(text)
@@ -237,11 +245,13 @@ def find_images(image):
 
     print('Done.')
 
+
+
 def market_refresh():
     
     #locate_and_click("market_refresh", conf=0.6)
-    find_images('test')
-
+    a = find_images('test')
+    print(a)
     #locate_all_and_click('mystery_shard_market')
     #match_all('get_mystery')
     #click_and_drag('market_drag',  x_adj=0, y_adj=-200)
