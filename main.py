@@ -15,7 +15,8 @@ from vision import Vision
 import pytesseract
 tes_path = pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 import timeit
-
+import logging
+from PIL import Image
 
 screenWidth, screenHeight = pyautogui.size()
 
@@ -139,6 +140,7 @@ def locate_on_screen(tpl_path):
 
 def locate_and_click(image, conf=0.8, x_adj=0, y_adj=0, wait_time = 3):
     for i in range(5):
+        logging.warning(msg=f'Trying to locate {image}...{i}')
         print(f'Trying to locate {image}...{i}')
         if pyautogui.locateOnScreen(f'./images/{image}.png', confidence=conf) != None:
             location = pyautogui.locateOnScreen(f'./images/{image}.png', confidence=conf)
@@ -195,11 +197,20 @@ def find_images(image):
             # makes a screenshot based on the position
             im = pyautogui.screenshot(region=(x_, y_, location[0][2], location[0][3]))
 
-            # ocr the text from the image
-            text = pytesseract.image_to_string(im)
+            #print(type(im))
+            image_data = np.asarray(im)
+            img_1 = cv.resize(image_data, None, fx=2, fy=2, interpolation=cv.INTER_CUBIC)
+            #img_2 = cv.threshold(img_1, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)[1]
+            #print(type(img_2))
             
-            if text not in black_list:
-                pyautogui.moveTo(x_+800, y_+50)
+            #thresh = cv.threshold(image_data,0,255,cv.THRESH_BINARY_INV + cv.THRESH_OTSU)[1]
+            # ocr the text from the image
+            text = pytesseract.image_to_string(img_1,  lang='eng',
+                    config='--psm 13 --oem 3 -c tessedit_char_whitelist=0123456789')
+            #logging.warning(text)
+            print(text)
+            #if text not in black_list:
+            #    pyautogui.moveTo(x_+800, y_+50)
             #print(text)
             
         '''
@@ -229,7 +240,7 @@ def find_images(image):
 def market_refresh():
     
     #locate_and_click("market_refresh", conf=0.6)
-    find_images('test_4')
+    find_images('test')
 
     #locate_all_and_click('mystery_shard_market')
     #match_all('get_mystery')
@@ -237,7 +248,7 @@ def market_refresh():
     #locate_all_and_click('mystery_shard_market')
 
     #go_to_base()
-#market_refresh()
+market_refresh()
 
 def get_mine_gems():
     locate_and_click('mine')
@@ -258,7 +269,8 @@ def play_time_rewards():
     '''
     Collects all playtime rewards
     '''
-    locate_and_click('playtime')
+    adjusted_click(550.0, 221.5)
+    time.sleep(1)
     loc = pyautogui.locateOnScreen('./images/playtime_1.png', confidence=0.7)
     location = pyautogui.center(loc)
     click_element(location[0], location[1])
@@ -345,44 +357,50 @@ def to_dragon(repeat=1):
                 go_to_base()
                 break
 
-def to_clan_boss(difficulty = 'UNM'):
+def to_clan_boss(difficulty = 'UNM', repeat=1):
 
     # Make sure that user is at base
-    
-    go_to_base()
+    for i in range(repeat):
 
-    locate_and_click('rsl')
-    locate_and_click('battle', 0.6)
-    mouse_position = pyautogui.position()
-    pyautogui.moveTo(mouse_position[0], mouse_position[1] - 200)
-    time.sleep(1)
-    pyautogui.dragTo(mouse_position[0]- 400, mouse_position[1], duration=5)
+        go_to_base()
 
-    
-    locate_and_click('clan_boss_enter')
-    mouse_position = pyautogui.position()
-    pyautogui.dragTo(mouse_position[0], mouse_position[1] - 400, duration=5)
+        locate_and_click('rsl')
+        locate_and_click('battle', 0.6)
+        mouse_position = pyautogui.position()
+        pyautogui.moveTo(mouse_position[0], mouse_position[1] - 200)
+        time.sleep(1)
+        pyautogui.dragTo(mouse_position[0]- 400, mouse_position[1], duration=5)
 
-    if difficulty == 'UNM':
-        locate_and_click('UNM', conf=0.7)   
-        locate_and_click('clan_boss_battle', conf=0.7)
-        locate_and_click("start_on_auto_ON", x_adj=-100, conf=0.9)
-        locate_and_click('clan_boss_start', conf=0.9)
+        
+        locate_and_click('clan_boss_enter')
+        mouse_position = pyautogui.position()
+        pyautogui.dragTo(mouse_position[0], mouse_position[1] - 400, duration=5)
 
-        unm_custom()
+        if difficulty == 'UNM':
+            locate_and_click('UNM', conf=0.7)   
+            locate_and_click('clan_boss_battle', conf=0.7)
+            locate_and_click("start_on_auto_ON", x_adj=-100, conf=0.9)
+            locate_and_click('team_setup', conf=0.9)
+            locate_and_click('team_UNM', conf=0.9, x_adj=-250)
+            pyautogui.press('esc')
+            locate_and_click("start_on_auto_ON", x_adj=-100, conf=0.9)
+            locate_and_click('clan_boss_start', conf=0.9)
 
-    elif difficulty == 'NM':
-        locate_and_click('NM', conf=0.9)  
-        locate_and_click('clan_boss_battle', conf=0.9)
-        locate_and_click("start_on_auto_ON", x_adj=-100, conf=0.9)
-        locate_and_click('team_setup', conf=0.9)
-        locate_and_click('team_NM', conf=0.9, x_adj=-250)
-        pyautogui.press('esc')
-        locate_and_click("start_on_auto_ON", x_adj=-100, conf=0.9)
-        locate_and_click('clan_boss_start', conf=0.9)
+            unm_custom()
 
-        nightmare_custom()
+        elif difficulty == 'NM':
+            locate_and_click('NM', conf=0.9)  
+            locate_and_click('clan_boss_battle', conf=0.9)
+            locate_and_click("start_on_auto_ON", x_adj=-100, conf=0.9)
+            locate_and_click('team_setup', conf=0.9)
+            locate_and_click('team_NM', conf=0.9, x_adj=-250)
+            pyautogui.press('esc')
+            locate_and_click("start_on_auto_ON", x_adj=-100, conf=0.9)
+            locate_and_click('clan_boss_start', conf=0.9)
 
+            nightmare_custom()
+
+        #time.sleep(900)
 
 
 
@@ -467,12 +485,15 @@ def upgrade_armor():
     adjusted_click(332, 316)
     time.sleep(2)
 
-def go_to_arena():
+def go_to_arena(type = 'classic'):
 
     locate_and_click('rsl')
     locate_and_click('battle', 0.6)
     locate_and_click('arena')
-    locate_and_click('classic_arena')
+    if type == 'classic':
+        locate_and_click('classic_arena')
+    else:
+        locate_and_click('tag_arena')
  
     roam_and_fight()
 
@@ -515,6 +536,7 @@ def routine():
 #daily_quests_collect()
 #open_raid()
 #to_clan_boss('NM')
+
 #to_minotaur(repeat=1)
 #go_to_base()
 #to_minotaur(repeat=30)
