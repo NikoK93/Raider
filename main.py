@@ -174,91 +174,176 @@ def find_images(image):
     wincap = WindowCapture('Raid: Shadow Legends')
     
     #vision = Vision()
+
+    # get an updated image of the game
+    screenshot = wincap.get_screenshot()
     
-    black_list = []
+    # display the processed image
+    
+    points, location = vision_chracters.find(screenshot, 0.5, 'rectangles')
+    #print(pytesseract.image_to_string(points))
+    #print(points, location)
 
-    while(True):
+    if location:
 
-        time.sleep(1)
-        # get an updated image of the game
-        screenshot = wincap.get_screenshot()
+        # get's screen position
+        x, y = location[0][0], location[0][1]
+        x_, y_ = wincap.get_screen_position((x, y))
+        # makes a screenshot based on the position
+        im = pyautogui.screenshot(region=(x_, y_, location[0][2], location[0][3]))
+        print(x, y)
+        #print(type(im))
+        #image_data = np.asarray(im)
+        #img_1 = cv.resize(image_data, None, fx=2, fy=2, interpolation=cv.INTER_CUBIC)
+        #img_2 = cv.threshold(img_1, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)[1]
+        #print(type(img_2))
         
-        # display the processed image
+        #thresh = cv.threshold(image_data,0,255,cv.THRESH_BINARY_INV + cv.THRESH_OTSU)[1]
+        # ocr the text from the image
+        text = pytesseract.image_to_string(im,  lang='eng')
+        num = [el for el in text if el.isdigit()]
+        #logging.warning(text)
+        if num:
+            if int(num[0]) == 1:
+                return num
+                
+
+
+        #deselect champions by static position
+
+        #print(num)
+        #if text not in black_list:
+        #    pyautogui.moveTo(x_+800, y_+50)
+        #print(text)
         
-        points, location = vision_chracters.find(screenshot, 0.5, 'rectangles')
-        #print(pytesseract.image_to_string(points))
-        #print(points, location)
+    '''
+    try:
+        #x, y = points[0]
+        #if points != None:
+        #x_, y_ = wincap.get_screen_position((x, y))
+        #adjusted_click(x, y)
+        click_element(x_, y_)
+    except:
+        print('No points found...')
 
-        if location:
+    '''
+    #points = vision_gunsnbottle.find(screenshot, 0.7, 'points')
+    #cv.imshow('Computer Vision', screenshot)
+    # debug the loop rate
 
-            # get's screen position
-            x, y = location[0][0], location[0][1]
-            x_, y_ = wincap.get_screen_position((x, y))
-            # makes a screenshot based on the position
-            im = pyautogui.screenshot(region=(x_, y_, location[0][2], location[0][3]))
+    #targets = Vision.get_click_points(detector.rectangles)
+    # press 'q' with the output window focused to exit.
+    # waits 1 ms every loop to process key presses
 
-            #print(type(im))
-            #image_data = np.asarray(im)
-            #img_1 = cv.resize(image_data, None, fx=2, fy=2, interpolation=cv.INTER_CUBIC)
-            #img_2 = cv.threshold(img_1, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)[1]
-            #print(type(img_2))
-            
-            #thresh = cv.threshold(image_data,0,255,cv.THRESH_BINARY_INV + cv.THRESH_OTSU)[1]
-            # ocr the text from the image
-            text = pytesseract.image_to_string(im,  lang='eng')
-            num = [el for el in text if el.isdigit()]
-            #logging.warning(text)
-            if num:
-                if int(num[0]) == 1:
-                    return num, x_, y_
-                    
-
-
-            #deselect champions by static position
-
-            #print(num)
-            #if text not in black_list:
-            #    pyautogui.moveTo(x_+800, y_+50)
-            #print(text)
-            
-        '''
-        try:
-            #x, y = points[0]
-            #if points != None:
-            #x_, y_ = wincap.get_screen_position((x, y))
-            #adjusted_click(x, y)
-            click_element(x_, y_)
-        except:
-            print('No points found...')
-
-        '''
-        #points = vision_gunsnbottle.find(screenshot, 0.7, 'points')
-        #cv.imshow('Computer Vision', screenshot)
-        # debug the loop rate
-
-        #targets = Vision.get_click_points(detector.rectangles)
-        # press 'q' with the output window focused to exit.
-        # waits 1 ms every loop to process key presses
-        if cv.waitKey(1) == ord('q'):
-            cv.destroyAllWindows()
-            break
 
     print('Done.')
 
+def find_leveling_heroes(image):
+
+    vision_chracters = Vision(f'./images/{image}.jpg')
+    wincap = WindowCapture('Raid: Shadow Legends')
+    
+    #vision = Vision()
+    
+   
+
+    
+    time.sleep(1)
+    # get an updated image of the game
+    screenshot = wincap.get_screenshot()
+    
+    # display the processed image
+    
+    points, location = vision_chracters.find(screenshot, 0.4, 'rectangles')
+    #print(pytesseract.image_to_string(points))
+    #print(points, location)
+
+    if location:
+
+        # get's screen position
+        x, y = location[0][0], location[0][1]
+        x_, y_ = wincap.get_screen_position((x, y))
+        # makes a screenshot based on the position
+        #im = pyautogui.screenshot(region=(x_, y_, location[0][2], location[0][3]))
+        print(x_, y_)
+        return x_, y_
+        #return x_, y_
+        #print(type(im))
+        #image_data = np.asarray(im)
+        #img_1 = cv.resize(image_data, None, fx=2, fy=2, interpolation=cv.INTER_CUBIC)
+        #img_2 = cv.threshold(img_1, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)[1]
+        #print(type(img_2))
+        
+        #thresh = cv.threshold(image_data,0,255,cv.THRESH_BINARY_INV + cv.THRESH_OTSU)[1]
+        # ocr the text from the image
+    
 
 
-def market_refresh():
+        #deselect champions by static position
+
+        #print(num)
+        #if text not in black_list:
+        #    pyautogui.moveTo(x_+800, y_+50)
+        #print(text)
+        
+    '''
+    try:
+        #x, y = points[0]
+        #if points != None:
+        #x_, y_ = wincap.get_screen_position((x, y))
+        #adjusted_click(x, y)
+        click_element(x_, y_)
+    except:
+        print('No points found...')
+
+    '''
+    #points = vision_gunsnbottle.find(screenshot, 0.7, 'points')
+    #cv.imshow('Computer Vision', screenshot)
+    # debug the loop rate
+
+    #targets = Vision.get_click_points(detector.rectangles)
+    # press 'q' with the output window focused to exit.
+    # waits 1 ms every loop to process key presses
+
+
+    print('Done.')
+
+def deselect():
+
+    adjusted_click(-339.0, 20.5)
+    time.sleep(1)
+    adjusted_click(-458, -91)
+    time.sleep(1)
+    adjusted_click(-343, -179)
+    
+def add_leveling_heroes():
     
     #locate_and_click("market_refresh", conf=0.6)
-    a = find_images('test')
-    print(a)
+
+    while pyautogui.locateOnScreen('./images/empty_leveling_slot.png', confidence=0.7) != None:
+        x, y = find_leveling_heroes('char_2')
+        
+        pyautogui.moveTo(x+20, y+20)
+        pyautogui.mouseDown(duration=2)
+
+        level = find_images('test')
+        print(level)
+        if int(level[0]) == 1:
+            pyautogui.press('esc')
+            time.sleep(2)
+            pyautogui.click(x+20, y+20)
+            pyautogui.click()
+        
+    deselect()
+
     #locate_all_and_click('mystery_shard_market')
     #match_all('get_mystery')
     #click_and_drag('market_drag',  x_adj=0, y_adj=-200)
     #locate_all_and_click('mystery_shard_market')
 
     #go_to_base()
-market_refresh()
+#get_difference()
+#add_leveling_heroes()
 
 def get_mine_gems():
     locate_and_click('mine')
@@ -545,7 +630,7 @@ def routine():
 #go_to_tavern()
 #daily_quests_collect()
 #open_raid()
-#to_clan_boss('NM')
+to_clan_boss('UNM', repeat=2)
 
 #to_minotaur(repeat=1)
 #go_to_base()
