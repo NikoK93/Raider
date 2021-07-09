@@ -10,6 +10,7 @@ import win32gui
 from clan_boss import unm_custom, nightmare_custom
 from support_functions import get_difference
 
+from windowcapture_modified import WindowCapture as WCM
 from windowcapture import WindowCapture
 from vision import Vision
 import pytesseract
@@ -17,7 +18,7 @@ tes_path = pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-
 import timeit
 import logging
 from PIL import Image
-import digit_recognition
+
 screenWidth, screenHeight = pyautogui.size()
 
 GAME_RESOLUTION = (1280, 720)
@@ -59,8 +60,15 @@ def click_element(x, y):
 def adjusted_click(x_adj, y_adj):
 
     x, y = CENTER_POSITION
-    print(x + x_adj, y + y_adj)
+    #print(x + x_adj, y + y_adj)
     click_element(x + x_adj, y + y_adj)
+
+
+def adjusted_move(x_adj, y_adj):
+
+    x, y = CENTER_POSITION
+    #print(x + x_adj, y + y_adj)
+    pyautogui.moveTo(x + x_adj, y + y_adj)
 
 def get_position(image, conf=0.8, x_adj=0, y_adj=0):
     for i in range(5):
@@ -180,7 +188,7 @@ def find_images(image):
     
     # display the processed image
     
-    points, location = vision_chracters.find(screenshot, 0.5, 'rectangles')
+    points, location = vision_chracters.find(screenshot, 0.4, 'rectangles')
     #print(pytesseract.image_to_string(points))
     #print(points, location)
 
@@ -200,6 +208,8 @@ def find_images(image):
         
         #thresh = cv.threshold(image_data,0,255,cv.THRESH_BINARY_INV + cv.THRESH_OTSU)[1]
         # ocr the text from the image
+
+        
         text = pytesseract.image_to_string(im,  lang='eng')
         num = [el for el in text if el.isdigit()]
         #logging.warning(text)
@@ -238,6 +248,9 @@ def find_images(image):
 
     print('Done.')
 
+
+
+
 def find_leveling_heroes(image):
 
     vision_chracters = Vision(f'./images/{image}.jpg')
@@ -248,65 +261,62 @@ def find_leveling_heroes(image):
    
 
     
-    time.sleep(1)
+    
+    while True:
+        
     # get an updated image of the game
-    screenshot = wincap.get_screenshot()
-    
-    # display the processed image
-    
-    points, location = vision_chracters.find(screenshot, 0.4, 'rectangles')
-    #print(pytesseract.image_to_string(points))
-    #print(points, location)
-
-    if location:
-
-        # get's screen position
-        x, y = location[0][0], location[0][1]
-        x_, y_ = wincap.get_screen_position((x, y))
-        # makes a screenshot based on the position
-        #im = pyautogui.screenshot(region=(x_, y_, location[0][2], location[0][3]))
-        print(x_, y_)
-        return x_, y_
-        #return x_, y_
-        #print(type(im))
-        #image_data = np.asarray(im)
-        #img_1 = cv.resize(image_data, None, fx=2, fy=2, interpolation=cv.INTER_CUBIC)
-        #img_2 = cv.threshold(img_1, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)[1]
-        #print(type(img_2))
+        screenshot = wincap.get_screenshot()
         
-        #thresh = cv.threshold(image_data,0,255,cv.THRESH_BINARY_INV + cv.THRESH_OTSU)[1]
-        # ocr the text from the image
-    
-
-
-        #deselect champions by static position
-
-        #print(num)
-        #if text not in black_list:
-        #    pyautogui.moveTo(x_+800, y_+50)
-        #print(text)
+        # display the processed image
         
-    '''
-    try:
-        #x, y = points[0]
-        #if points != None:
-        #x_, y_ = wincap.get_screen_position((x, y))
-        #adjusted_click(x, y)
-        click_element(x_, y_)
-    except:
-        print('No points found...')
+        points, location = vision_chracters.find(screenshot, 0.4, 'rectangles')
+        #print(pytesseract.image_to_string(points))
+        #print(points, location)
 
-    '''
-    #points = vision_gunsnbottle.find(screenshot, 0.7, 'points')
-    #cv.imshow('Computer Vision', screenshot)
-    # debug the loop rate
+  
 
-    #targets = Vision.get_click_points(detector.rectangles)
-    # press 'q' with the output window focused to exit.
-    # waits 1 ms every loop to process key presses
+            #return x_, y_
+            #print(type(im))
+            #image_data = np.asarray(im)
+            #img_1 = cv.resize(image_data, None, fx=2, fy=2, interpolation=cv.INTER_CUBIC)
+            #img_2 = cv.threshold(img_1, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)[1]
+            #print(type(img_2))
+            
+            #thresh = cv.threshold(image_data,0,255,cv.THRESH_BINARY_INV + cv.THRESH_OTSU)[1]
+            # ocr the text from the image
+        
 
 
-    print('Done.')
+            #deselect champions by static position
+
+            #print(num)
+            #if text not in black_list:
+            #    pyautogui.moveTo(x_+800, y_+50)
+            #print(text)
+            
+        '''
+        try:
+            #x, y = points[0]
+            #if points != None:
+            #x_, y_ = wincap.get_screen_position((x, y))
+            #adjusted_click(x, y)
+            click_element(x_, y_)
+        except:
+            print('No points found...')
+
+        '''
+        #points = vision_gunsnbottle.find(screenshot, 0.7, 'points')
+        #cv.imshow('Computer Vision', screenshot)
+        # debug the loop rate
+
+        #targets = Vision.get_click_points(detector.rectangles)
+        # press 'q' with the output window focused to exit.
+        # waits 1 ms every loop to process key presses
+
+
+        print('Done.')
+
+#find_leveling_heroes('char_2')
 
 def deselect():
 
@@ -316,34 +326,85 @@ def deselect():
     time.sleep(1)
     adjusted_click(-343, -179)
     
+
+def generate_cords():
+
+    start_x = 245
+    start_y = 293
+
+    adjust = 100
+
+    positions = []
+    for i in range(30):
+        positions.append((start_x, start_y))
+        start_x-=adjust
+    
+    a = iter(positions)
+
+    return a
+
 def add_leveling_heroes():
     
     #locate_and_click("market_refresh", conf=0.6)
+    cords = generate_cords()
 
     while pyautogui.locateOnScreen('./images/empty_leveling_slot.png', confidence=0.7) != None:
-        x, y = find_leveling_heroes('char_2')
+        #x, y = find_leveling_heroes('char_2')
         
-        pyautogui.moveTo(x+20, y+20)
+        #pyautogui.moveTo(x+20, y+20)
+        x, y = next(cords)
+        print(x, y)
+        adjusted_move(x, y)
+        time.sleep(1)
         pyautogui.mouseDown(duration=2)
-
-        level = find_images('test')
-        print(level)
-        if int(level[0]) == 1:
-            pyautogui.press('esc')
-            time.sleep(2)
-            pyautogui.click(x+20, y+20)
-            pyautogui.click()
+        time.sleep(1)
+        pyautogui.mouseUp()
         
-    deselect()
+        level = find_images('test_3')
+
+        print(level)
+        if level:
+            if int(level[0]) == 1:
+                pyautogui.press('esc')
+                time.sleep(2)
+                adjusted_click(x, y)
+                #pyautogui.click()
+    
+        if pyautogui.locateOnScreen('./images/empty_leveling_slot.png', confidence=0.7) == None:
+            return True
+  
+    
+    
+    
+    time.sleep(1)
+
+    #deselect()
 
     #locate_all_and_click('mystery_shard_market')
     #match_all('get_mystery')
     #click_and_drag('market_drag',  x_adj=0, y_adj=-200)
     #locate_all_and_click('mystery_shard_market')
 
-    #go_to_base()
+    #go_to_base()#
 #get_difference()
-#add_leveling_heroes()
+
+def leveling_loop():
+
+        locate_and_click('start_leveling')
+
+        while True:
+            print('leveling champions')
+
+            if pyautogui.locateOnScreen('./images/max_level.png', confidence=0.7) != None:
+                pyautogui.press('esc')
+                break
+            else:
+                locate_and_click('replay_leveling')
+        
+
+#leveling_loop()
+
+
 
 def get_mine_gems():
     locate_and_click('mine')
@@ -452,6 +513,53 @@ def to_dragon(repeat=1):
                 go_to_base()
                 break
 
+
+def to_spider(repeat=1):
+
+    victory = 0
+    defeat = 0
+
+    go_to_base()
+
+    locate_and_click('rsl')
+    # Battle location
+    adjusted_click(505.0, 310.5)
+
+    locate_and_click('dungeons', 0.7)
+
+    mouse_position = pyautogui.position()
+    pyautogui.dragTo(mouse_position[0]- 1000, mouse_position[1], duration=5)
+    locate_and_click('spider', 0.8)
+
+    for i in range(60):
+        pyautogui.scroll(-1)
+
+    x,y = CENTER_POSITION
+    time.sleep(1)
+    click_element(x + 400, y +190)
+
+    locate_and_click('dragon_start')
+
+    while repeat >= 1:
+        time.sleep(2)
+        if pyautogui.locateOnScreen('./images/replay_spider.png') == None:
+            print(f'Waiting for the game to finish, round: {repeat}. Win/loss: {victory}-{defeat}')
+        else:
+            if pyautogui.locateOnScreen('./images/victory_spider.png', confidence=0.9) != None:
+                victory +=1
+
+            elif pyautogui.locateOnScreen('./images/defeat_spider.png', confidence=0.9) != None:
+                defeat +=1
+
+            repeat -= 1
+            if repeat >= 1:
+                locate_and_click('replay_spider')
+            else:
+                print('Finished games')
+                go_to_base()
+                break
+
+
 def to_clan_boss(difficulty = 'UNM', repeat=1):
 
     # Make sure that user is at base
@@ -482,6 +590,11 @@ def to_clan_boss(difficulty = 'UNM', repeat=1):
             locate_and_click('clan_boss_start', conf=0.9)
 
             unm_custom()
+            while True:
+                if pyautogui.locateOnScreen('./images/cb_replay.png') != None:
+                    locate_and_click('cb_replay', conf=0.9)
+                    unm_custom()
+                time.sleep(20)
 
         elif difficulty == 'NM':
             locate_and_click('NM', conf=0.9)  
@@ -630,14 +743,14 @@ def routine():
 #go_to_tavern()
 #daily_quests_collect()
 #open_raid()
-to_clan_boss('UNM', repeat=2)
-
+#to_clan_boss('UNM', repeat=2)
+#to_dragon(repeat=100)
 #to_minotaur(repeat=1)
 #go_to_base()
 #to_minotaur(repeat=30)
 #to_dragon()
 #go_to_arena()
-
+#to_spider(100)
 #locate_and_click('mino_15', x_adj=-200, conf=0.9)
 
 #x, y = CENTER_POSITION
