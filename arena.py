@@ -35,21 +35,30 @@ class Arena():
 
     def arena_fight(self):
 
+        '''
         if pyautogui.locateOnScreen('./images/tag_arena_refresh.png') != None:
             locate_and_click('tag_arena_refresh')
+            # Edit, located start after refrest
+            locate_and_click('classic_arena_start')
+            
         elif pyautogui.locateOnScreen('./images/refresh_arena_classic.png') != None:
             locate_and_click('refresh_arena_classic')
-        
+            # Edit, located start after refrest
+            locate_and_click('classic_arena_start')
+        '''
+        # Find the battle location and click to begin
         if pyautogui.locateOnScreen('./images/classic_arena_battle.png', confidence=0.8) != None:
             locate_and_click('classic_arena_battle')
+
+            # Refresh if possible and return False to start finding new matches
             if pyautogui.locateOnScreen('./images/confirm_arena_token.png') != None:
                 locate_and_click("confirm_arena_token")
-                locate_and_click('classic_arena_battle')
-
+                return False
+            # Return False and turn of STATE if gem refill has appeared
             elif pyautogui.locateOnScreen('./images/classic_arena_refill.png') != None:
                 self.STATE = 0
                 return False
-
+            # Start the arena figh
             else:
                 locate_and_click('classic_arena_start')
                 start = time.time()
@@ -99,10 +108,10 @@ class Arena():
                 pyautogui.moveTo(x, y)
                 mouse_position = pyautogui.position()
 
-                #pyautogui.dragTo(mouse_position[0], mouse_position[1] - 200, duration=2)
+                pyautogui.dragTo(mouse_position[0], mouse_position[1] - 200, duration=2)
                 
-                ran_int, y = self.get_scroll_parameters()
-                print(randint, y)
+                #ran_int, y = self.get_scroll_parameters()
+                #print(randint, y)
                 #for i in range(randint):
                 #  pyautogui.scroll(y)
 
@@ -110,7 +119,7 @@ class Arena():
 
     def go_to_arena(self):
 
-        locate_and_click('rsl')
+        #locate_and_click('rsl')
         locate_and_click('battle', 0.6)
         locate_and_click('arena')
         if self.arena_type == 'classic':
@@ -124,6 +133,6 @@ class Arena():
     def get_scroll_parameters(self):
         
         rand_int = np.random.randint(1,100)
-        rand_y = np.random.choice([1, -1])
+        rand_y = np.random.choice([1, -1], [0.3,0.7])
 
         return randint, rand_y

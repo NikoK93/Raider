@@ -105,4 +105,5 @@ def isNowInTimePeriod(startTime, endTime, nowTime):
         #Over midnight: 
         return nowTime >= startTime or nowTime <= endTime 
 
-  
+
+#get_difference()

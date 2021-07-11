@@ -560,55 +560,54 @@ def to_spider(repeat=1):
                 break
 
 
-def to_clan_boss(difficulty = 'UNM', repeat=1):
+def to_clan_boss(difficulty = 'UNM'):
 
     # Make sure that user is at base
-    for i in range(repeat):
+    
 
-        go_to_base()
+    locate_and_click('rsl')
+    locate_and_click('battle', 0.6)
+    mouse_position = pyautogui.position()
+    pyautogui.moveTo(mouse_position[0], mouse_position[1] - 200)
+    time.sleep(1)
+    pyautogui.dragTo(mouse_position[0]- 400, mouse_position[1], duration=5)
 
-        locate_and_click('rsl')
-        locate_and_click('battle', 0.6)
-        mouse_position = pyautogui.position()
-        pyautogui.moveTo(mouse_position[0], mouse_position[1] - 200)
-        time.sleep(1)
-        pyautogui.dragTo(mouse_position[0]- 400, mouse_position[1], duration=5)
+    
+    locate_and_click('clan_boss_enter')
+    mouse_position = pyautogui.position()
+    pyautogui.dragTo(mouse_position[0], mouse_position[1] - 400, duration=5)
 
-        
-        locate_and_click('clan_boss_enter')
-        mouse_position = pyautogui.position()
-        pyautogui.dragTo(mouse_position[0], mouse_position[1] - 400, duration=5)
+    if difficulty == 'UNM':
+        locate_and_click('UNM', conf=0.7)   
+        locate_and_click('clan_boss_battle', conf=0.7)
+        locate_and_click("start_on_auto_ON", x_adj=-100, conf=0.9)
+        locate_and_click('team_setup', conf=0.9)
+        locate_and_click('team_UNM', conf=0.9, x_adj=-250)
+        pyautogui.press('esc')
+        locate_and_click("start_on_auto_ON", x_adj=-100, conf=0.9)
+        locate_and_click('clan_boss_start', conf=0.9)
 
-        if difficulty == 'UNM':
-            locate_and_click('UNM', conf=0.7)   
-            locate_and_click('clan_boss_battle', conf=0.7)
-            locate_and_click("start_on_auto_ON", x_adj=-100, conf=0.9)
-            locate_and_click('team_setup', conf=0.9)
-            locate_and_click('team_UNM', conf=0.9, x_adj=-250)
-            pyautogui.press('esc')
-            locate_and_click("start_on_auto_ON", x_adj=-100, conf=0.9)
-            locate_and_click('clan_boss_start', conf=0.9)
+        unm_custom()
+        while True:
+            if pyautogui.locateOnScreen('./images/cb_replay.png') != None:
+                locate_and_click('cb_replay', conf=0.9)
+                unm_custom()
+                break
+            time.sleep(20)
 
-            unm_custom()
-            while True:
-                if pyautogui.locateOnScreen('./images/cb_replay.png') != None:
-                    locate_and_click('cb_replay', conf=0.9)
-                    unm_custom()
-                time.sleep(20)
+    elif difficulty == 'NM':
+        locate_and_click('NM', conf=0.9)  
+        locate_and_click('clan_boss_battle', conf=0.9)
+        locate_and_click("start_on_auto_ON", x_adj=-100, conf=0.9)
+        locate_and_click('team_setup_nm', conf=0.9)
+        locate_and_click('team_NM', conf=0.9, x_adj=-250)
+        pyautogui.press('esc')
+        locate_and_click("start_on_auto_ON", x_adj=-100, conf=0.9)
+        locate_and_click('clan_boss_start', conf=0.9)
 
-        elif difficulty == 'NM':
-            locate_and_click('NM', conf=0.9)  
-            locate_and_click('clan_boss_battle', conf=0.9)
-            locate_and_click("start_on_auto_ON", x_adj=-100, conf=0.9)
-            locate_and_click('team_setup', conf=0.9)
-            locate_and_click('team_NM', conf=0.9, x_adj=-250)
-            pyautogui.press('esc')
-            locate_and_click("start_on_auto_ON", x_adj=-100, conf=0.9)
-            locate_and_click('clan_boss_start', conf=0.9)
+        nightmare_custom()
 
-            nightmare_custom()
-
-        #time.sleep(900)
+    #time.sleep(900)
 
 
 

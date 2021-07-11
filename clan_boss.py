@@ -1,228 +1,59 @@
-import pyautogui
 import time
+import pyautogui
 
-def locate_and_click(image, conf=0.8, x_adj=0, y_adj=0, wait_time = 3):
-    for i in range(5):
-        print(f'Trying to locate image...{i}')
-        if pyautogui.locateOnScreen(f'./images/{image}.png', confidence=conf) != None:
-            location = pyautogui.locateOnScreen(f'./images/{image}.png', confidence=conf)
-            lock = pyautogui.center(location)
-            click_element(lock[0] + x_adj, lock[1] + y_adj)
-            time.sleep(wait_time)
-            break
+from custom_CB import unm_custom, nightmare_custom
+from support_functions import locate_and_click, get_center, go_to_base, adjusted_click, click_element
 
-def click_element(x, y):
-    pyautogui.click(x, y)
+
+
+class ClanBoss():
+
+    def __init__(self, difficulty):
+
+        self.difficulty = difficulty
+
+    def to_clan_boss(self):
+
+        # Make sure that user is at base
+        go_to_base()
+
+        locate_and_click('battle', 0.6)
+        mouse_position = pyautogui.position()
+        pyautogui.moveTo(mouse_position[0], mouse_position[1] - 200)
+        time.sleep(1)
+        pyautogui.dragTo(mouse_position[0]- 400, mouse_position[1], duration=5)
+
         
-def unm_custom():
+        locate_and_click('clan_boss_enter')
+        mouse_position = pyautogui.position()
+        pyautogui.dragTo(mouse_position[0], mouse_position[1] - 400, duration=5)
 
-    time.sleep(5)
+        if self.difficulty == 'UNM':
+            locate_and_click('UNM', conf=0.7)   
+            locate_and_click('clan_boss_battle', conf=0.7)
+            locate_and_click("start_on_auto_ON", x_adj=-100, conf=0.9)
+            locate_and_click('team_setup', conf=0.9)
+            locate_and_click('team_UNM', conf=0.9, x_adj=-250)
+            pyautogui.press('esc')
+            locate_and_click("start_on_auto_ON", x_adj=-100, conf=0.9)
+            locate_and_click('clan_boss_start', conf=0.9)
 
-    locate_and_click('rsl')
-    pyautogui.press('e')
-    locate_and_click('confirm_2', conf=0.5, y_adj=50, wait_time=4)
+            unm_custom()
+            while True:
+                if pyautogui.locateOnScreen('./images/cb_replay.png') != None:
+                    locate_and_click('cb_replay', conf=0.9)
+                    unm_custom()
+                    break
+                time.sleep(20)
 
-    #frozen banshee opens with E
-    pyautogui.press('e')
-    locate_and_click('cb',conf=0.5,  wait_time=5)
-    
-    #septimus 
-    #locate_and_click('rsl')
-    pyautogui.press('w')
-    locate_and_click('cb', conf=0.5,  wait_time=4)
-    
-    # valkyrie AA
-    #locate_and_click('rsl')
-    #pyautogui.press('w')
-    locate_and_click('cb', conf=0.5,  wait_time=4)
+        elif self.difficulty == 'NM':
+            locate_and_click('NM', conf=0.9)  
+            locate_and_click('clan_boss_battle', conf=0.9)
+            locate_and_click("start_on_auto_ON", x_adj=-100, conf=0.9)
+            locate_and_click('team_setup', conf=0.9)
+            locate_and_click('team_NM', conf=0.9, x_adj=-250)
+            pyautogui.press('esc')
+            locate_and_click("start_on_auto_ON", x_adj=-100, conf=0.9)
+            locate_and_click('clan_boss_start', conf=0.9)
 
-    #mage
-    #locate_and_click('rsl')
-    locate_and_click('cb', conf=0.5,  wait_time=4)
-    
-    #Roschard
-    #locate_and_click('rsl')
-    #pyautogui.press('w')
-    locate_and_click('cb', conf=0.5,  wait_time=4)
-    
-    # mage
-    #locate_and_click('rsl')
-    #pyautogui.press('w')
-    locate_and_click('cb', conf=0.5,  wait_time=4)
-    
-    # mage
-    #locate_and_click('rsl')
-    #pyautogui.press('w')
-    locate_and_click('cb', conf=0.5,  wait_time=4)
-
-    #rosch
-    #locate_and_click('rsl')
-    #pyautogui.press('w')
-    locate_and_click('cb', conf=0.5,  wait_time=4)
-
-    #valkyrie
-    #locate_and_click('rsl')
-    #pyautogui.press('w')
-    locate_and_click('cb', conf=0.5,  wait_time=4)
-
-    #mage
-    #locate_and_click('rsl')
-    pyautogui.press('w')
-    locate_and_click('confirm_2', conf=0.5, y_adj=50, wait_time=4)
-
-    # banshee
-    #locate_and_click('rsl')
-    pyautogui.press('e')
-    locate_and_click('cb', conf=0.5,  wait_time=4)
-
-    # rosch
-    #locate_and_click('rsl')
-    locate_and_click('cb', conf=0.5,  wait_time=4)
-    
-    # septimus
-    #locate_and_click('rsl')
-    locate_and_click('cb', conf=0.5,  wait_time=4)
-    
-    # valkyrie
-    #locate_and_click('rsl')
-    pyautogui.press('w')
-    locate_and_click('cb', conf=0.5,  wait_time=4)
-    
-    # mage
-    #locate_and_click('rsl')
-    locate_and_click('cb', conf=0.5,  wait_time=10)
-
-    # rosch
-    #locate_and_click('rsl')
-    locate_and_click('cb', conf=0.5,  wait_time=5)
-    # banshee
-    #locate_and_click('rsl')
-    locate_and_click('cb', conf=0.5,  wait_time=5)
-    
-    # septi
-    #locate_and_click('rsl')
-    locate_and_click('cb', conf=0.5,  wait_time=5)
-
-    # valkyrie
-    #locate_and_click('rsl')
-    locate_and_click('cb', conf=0.5,  wait_time=5)
-    
-    # rosch
-    #locate_and_click('rsl')
-    locate_and_click('cb', conf=0.5,  wait_time=5)
-    
-    # mage
-    #locate_and_click('rsl')
-    locate_and_click('cb', conf=0.5,  wait_time=10)
-    
-    # banshee
-    #locate_and_click('rsl')
-    locate_and_click('cb', conf=0.5,  wait_time=5)
-
-    # septimus
-    #locate_and_click('rsl')
-    locate_and_click('cb', conf=0.5,  wait_time=5)
-    
-    # rosch
-    #locate_and_click('rsl')
-    locate_and_click('cb', conf=0.5,  wait_time=5)
-
-    # valkyrie
-    #locate_and_click('rsl')
-    locate_and_click('cb', conf=0.5, wait_time=5)
-
-    # mage
-    #locate_and_click('rsl')
-    pyautogui.press('w')
-    locate_and_click('confirm_2', conf=0.5, y_adj=50, wait_time=5)
-    
-    # banshee
-    #locate_and_click('rsl')
-    locate_and_click('cb', conf=0.5, wait_time=5)
-
-    # rosch
-    #locate_and_click('rsl')
-    pyautogui.press('a')
-    locate_and_click('cb', conf=0.5, wait_time=5)
-
-    #auto 
-    #locate_and_click('rsl')
-    locate_and_click('auto', conf=0.8)
-    # Manual first few rounds
-
-    # Click auto
-
-def nightmare_custom():
-
-    time.sleep(5)
-
-    #Round 1
-    #Roschard
-    locate_and_click('rsl')
-    locate_and_click('cb', conf=0.6,  wait_time=4)
-
-    # Support
-    locate_and_click('cb', conf=0.6,  wait_time=4)
-    
-    #banshee
-    pyautogui.press('e')
-    locate_and_click('cb',conf=0.6,  wait_time=4)
-
-    # Septimus
-    pyautogui.press('w')
-    locate_and_click('cb',conf=0.6,  wait_time=4)
-
-    # Valkyrie - CA
-    pyautogui.press('w')
-    locate_and_click('cb',conf=0.6,  wait_time=10)
-
-    #Round 2
-    #Roschard
-    locate_and_click('cb', conf=0.6,  wait_time=4)
-
-    # Support
-    locate_and_click('cb', conf=0.6,  wait_time=4)
-    
-    #banshee
-    locate_and_click('cb',conf=0.6,  wait_time=4)
-
-    # Septimus
-    locate_and_click('cb',conf=0.6,  wait_time=4)
-
-    # Roschard
-    locate_and_click('cb',conf=0.6,  wait_time=4)
-
-    # Valkyrie 
-    locate_and_click('cb',conf=0.6,  wait_time=10)
-
-
-    #Round 3
-    #Support
-    locate_and_click('cb', conf=0.6,  wait_time=4)
-
-    # Banshee
-    locate_and_click('cb', conf=0.6,  wait_time=4)
-    
-    #Roschard
-    locate_and_click('cb',conf=0.6,  wait_time=4)
-
-    # Septimus
-    locate_and_click('cb',conf=0.6,  wait_time=4)
-
-    # Roschard
-    locate_and_click('cb',conf=0.6,  wait_time=4)
-
-    # Valkyrie 
-    locate_and_click('cb',conf=0.6,  wait_time=5)
-
-
-    #Round 4
-    #Support
-    locate_and_click('cb', conf=0.6,  wait_time=4)
-
-    # Roschard - last move on manual
-    locate_and_click('cb', conf=0.6,  wait_time=4)
-    
-    #auto 
-    #locate_and_click('rsl')
-    locate_and_click('auto', conf=0.8)
+            nightmare_custom()

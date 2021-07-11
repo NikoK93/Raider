@@ -22,7 +22,7 @@ from support_functions import locate_and_click, get_center, go_to_base, adjusted
 
 class Dungeon():
 
-    def __init__(self, dungeon, runs, refill=False):
+    def __init__(self, dungeon, runs, refill):
 
         self.dungeon = dungeon
         self.runs = runs
@@ -37,6 +37,17 @@ class Dungeon():
     def save_data(self):
         pass
 
+    def faction_wars(self):
+
+        go_to_base()
+        # Battle location
+        adjusted_click(505.0, 310.5)
+        time.sleep(1)
+
+        locate_and_click('faction_wars')
+        time.sleep(2)
+
+        locate_and_click('orc_crypt', conf=0.5)
     def to_spider(self):
 
         go_to_base()
@@ -58,31 +69,49 @@ class Dungeon():
         time.sleep(1)
         click_element(x + 400, y +190)
 
+        time.sleep(2)
+        if pyautogui.locateOnScreen('./images/energy_refill.png', confidence=0.8) != None:
+            if self.energy_refill == True:
+                locate_and_click('energy_refill_dungeons', conf=0.8)
+                time.sleep(2)
+                click_element(x + 400, y +190)
+            else:
+                self.STATE = 0
+                
+
         locate_and_click('dragon_start')
 
-        while self.runs >= 1:
-            time.sleep(2)
-            if pyautogui.locateOnScreen('./images/replay_spider.png') == None:
-                print(f'Waiting for the game to finish, round: {self.runs}. Win/loss: {self.victory}-{self.defeat}')
-            else:
-                if pyautogui.locateOnScreen('./images/victory_spider.png', confidence=0.9) != None:
-                    self.victory +=1
+        if self.STATE == 1:
+            while self.runs >= 1:
+                time.sleep(2)
+                if pyautogui.locateOnScreen('./images/replay_spider.png') == None:
+                    print(f'Waiting for the game to finish, round: {self.runs}. Win/loss: {self.victory}-{self.defeat}')
+                else:
+                    if pyautogui.locateOnScreen('./images/victory_spider.png', confidence=0.9) != None:
+                        self.victory +=1
 
-                elif pyautogui.locateOnScreen('./images/defeat_spider.png', confidence=0.9) != None:
-                    self.defeat +=1
+                    elif pyautogui.locateOnScreen('./images/defeat_spider.png', confidence=0.9) != None:
+                        self.defeat +=1
 
-                self.runs -= 1
-                if self.runs >= 1:
-                    #check if daimond refresh
-                    if pyautogui.locateOnScreen('./images/energy_refresh_confirm.png') != None:
+                    self.runs -= 1
+                    if self.runs >= 1:
+                        #check if daimond refresh
+                        locate_and_click('replay_spider')
+    
+                        if pyautogui.locateOnScreen('./images/gem_energy_refill.png') != None:
+                            print('Aborting, no gem refills.')
+                            self.STATE = 0
+                            break
+                        else:
+                            if self.energy_refill == True:
+                                time.sleep(2)
+                                if pyautogui.locateOnScreen('./images/energy_refill.png', confidence=0.8) != None:
+                                    locate_and_click('energy_refill_dungeons', conf=0.8)
+                                    time.sleep(2)
+                                    locate_and_click('replay_spider')
+                            
+                            
+                    else:   
+                        print('Finished games')
                         self.STATE = 0
                         break
-                    else:
-                        if self.energy_refill == True:
-                            if pyautogui.locateOnScreen('./images/energy_refill_dungeons.png') != None:
-                                locate_and_click('energy_refill_dungeons')
-                        locate_and_click('replay_spider')
-                else:
-                    print('Finished games')
-                    self.STATE = 0
-                    break
