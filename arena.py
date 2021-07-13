@@ -49,7 +49,7 @@ class Arena():
         # Find the battle location and click to begin
         if pyautogui.locateOnScreen('./images/classic_arena_battle.png', confidence=0.8) != None:
             locate_and_click('classic_arena_battle')
-
+            time.sleep(2)
             # Refresh if possible and return False to start finding new matches
             if pyautogui.locateOnScreen('./images/confirm_arena_token.png') != None:
                 locate_and_click("confirm_arena_token")
@@ -58,11 +58,15 @@ class Arena():
             elif pyautogui.locateOnScreen('./images/classic_arena_refill.png') != None:
                 self.STATE = 0
                 return False
+            elif pyautogui.locateOnScreen('./images/tag_arena_gem.png') != None:
+                self.STATE = 0
+                return False
+
             # Start the arena figh
             else:
                 locate_and_click('classic_arena_start')
                 start = time.time()
-                while (True):
+                while self.STATE == 1:
                     time.sleep(2)
                     if pyautogui.locateOnScreen('./images/defeat_arena.png', confidence=0.9) != None:
                         print('Lost game, regresing list')
@@ -93,6 +97,10 @@ class Arena():
                     else:
                         end = time.time()
                         time_elapsed = end - start
+                        if time_elapsed > 500:
+                            pyautogui.press('esc')
+                            self.STATE = 0
+                            return False
                         print('Waiting',(time_elapsed))
                         #print('game finished')
                         

@@ -106,4 +106,30 @@ def isNowInTimePeriod(startTime, endTime, nowTime):
         return nowTime >= startTime or nowTime <= endTime 
 
 
+def go_to_stage(stage):
+
+    time.sleep(1)
+
+    if stage == 1:
+        adjusted_click(480, -220)
+    elif stage == 2:
+        adjusted_click(480, -95)
+    elif stage == 3:
+        adjusted_click(480, 30)
+    elif stage == 4:
+        adjusted_click(480, 150)
+    elif stage == 5:
+        adjusted_click(483.0, 281.5)
+    else:
+        for i in range(stage-5):
+            adjusted_move(483.0, 281.5)
+            mouse_position = pyautogui.position()
+            pyautogui.dragTo(mouse_position[0], mouse_position[1]-90, duration=0.5)
+            time.sleep(2)
+
+        adjusted_click(483.0, 281.5)
+
 #get_difference()
+
+
+#go_to_stage(10)

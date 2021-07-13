@@ -9,7 +9,7 @@ import time
 import numpy as np
 import win32gui
 import datetime
-from support_functions import locate_and_click, get_center, go_to_base, adjusted_click, click_element,adjusted_move
+from support_functions import go_to_stage, locate_and_click, get_center, go_to_base, adjusted_click, click_element,adjusted_move
 
 
 class Routine():
@@ -66,11 +66,14 @@ class Routine():
         # Collect daily quests
         go_to_base()
         self.daily_quests_collect()
+
+        # Collect arena champion
+        go_to_base()
+        self.arena_shop()
         
     def mini_routine(self):
-        
-        go_to_base()
-        self.login_rewards()
+
+
         # get mine rewards
         go_to_base()
         self.get_mine_gems()
@@ -87,12 +90,33 @@ class Routine():
         go_to_base()
         self.daily_quests_collect()
 
+        # Collect arena champion
+        go_to_base()
+        self.arena_shop()
+
     def login_rewards(self):
 
         time.sleep(1)
         adjusted_click(-618.0,10)
         time.sleep(1)
         adjusted_click(-587.0, -286)
+        time.sleep(1)
+        locate_and_click('collect_login')
+
+    def arena_shop(self):
+
+        
+        locate_and_click('battle', 0.6)
+        locate_and_click('arena')
+     
+        locate_and_click('tag_arena')
+
+        time.sleep(2)
+        adjusted_click(-514, 180)
+        time.sleep(1)
+        adjusted_click(576, -118)
+        time.sleep(2)
+        locate_and_click('buy_champion')
 
 
     def go_to_tavern(self):
@@ -316,6 +340,8 @@ class Routine():
         time.sleep(1)
         locate_and_click('shop_free')
         locate_and_click('mystery_shard')
+        locate_and_click('claim')
+        locate_and_click('ancient_shard')
         locate_and_click('claim')
 
         locate_and_click('limited_offer')

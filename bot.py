@@ -8,6 +8,7 @@ from dungeon_master import Dungeon
 from support_functions import open_raid, isNowInTimePeriod
 from arena import Arena
 from routines import Routine
+import database
 
 class Raider():
 
@@ -17,19 +18,35 @@ class Raider():
         self.CENTER_POSITION = open_raid()
 
         # Some default actions
-        self.actions = ['arena', 'tag_arena','spider', 'mini_routine']
-        #self.probabilities = [0.5, 0.5]
+        self.actions = ['arena', 'tag_arena','minotaur','FW','mini_routine']
+        self.daily_action = ['UNM', 'NM', 'routine']
 
         self.user_action = action
-
         temperature = dict.fromkeys(self.actions, 1)
 
         self.IDLE = 1
         self.market_refresh = None
-    
-    def get_status():
-        pass
-        # get current energy and arena coins status
+
+        # Once per day activites 
+        self.cb_UMM = 0
+        self.cb_MM = 0
+        self.routine = 0
+        # Load in the database
+        self.database = database.DataBaseManager()
+
+        # If no new dateime stamp exists from today, initialie it with fresh values
+        if self.database.select_data() == None:
+            self.database.initialize()
+        # Get data about states
+        self.get_status()
+
+    def get_status(self):
+        
+        self.cb_UMM = self.database.get_posts(difficulty='UNM')
+        self.cb_MM =self.database.get_posts(difficulty='NM')
+        self.routine = self.database.get_posts(difficulty='routine')
+
+        print(f" NM status: {self.cb_MM}, UNM status: {self.cb_UMM}, Routine status: {self.routine}")
 
     def action_refresh(self):
 
@@ -38,32 +55,54 @@ class Raider():
         if self.market_refresh is not None:
             if (now - self.market_refresh).total_seconds() > 3600:
                 if "routine_market_refresh" not in self.actions:
-                    self.actions.append('routine_market_refresh')
+                    # Insert market refresh as first priority
+                    self.actions.insert(0,'routine_market_refresh')
+
+        self.get_status()
 
     def main_loop(self):
 
+        # Call action refresh 
         self.action_refresh()
 
-        if isNowInTimePeriod(dt.time(11,00), dt.time(11,30), dt.datetime.now().time()):
+        if isNowInTimePeriod(dt.time(10,00), dt.time(18,00), dt.datetime.now().time()) and self.routine == 0:
             if 'routine' not in self.actions:
                 self.actions.insert(1,'routine')
+                self.database.update_value('routine')
 
-        if isNowInTimePeriod(dt.time(12,30), dt.time(14,30), dt.datetime.now().time()) and self.user_action == 'CB':
-            action = 'UNM'
+        if isNowInTimePeriod(dt.time(12,30), dt.time(13, 00), dt.datetime.now().time()) and self.cb_UMM == 0:
+            # Insert UNM as priority 1
+            if 'UNM' not in self.actions:
+                self.actions.insert(0,'UNM')
+                # Write to database
+                self.database.update_value('UNM')
+            
 
-        elif isNowInTimePeriod(dt.time(19,30), dt.time(21,30), dt.datetime.now().time()) and self.user_action == 'CB':
-            action = 'NM'
+        elif isNowInTimePeriod(dt.time(18,40), dt.time(21,30), dt.datetime.now().time()) and self.cb_MM == 0:
+             # Insert NM as priority 1
+            if 'NM' not in self.actions:
+                self.actions.insert(0,'NM')
+                # Write to database
+                self.database.update_value('NM')
+
         elif self.user_action != None:
-            action = self.user_action
-        else:
-            action = self.actions[0]
-            self.actions = self.actions[1:]
-            if action != "routine":
-                self.actions.append(action)
-                print(self.actions)
+            #action = self.user_action
+            self.actions.insert(0, self.user_action)
+
+        # Select action from index 0
+        action = self.actions[0]
+        # Slice actions to remove the first element from priority queue
+        self.actions = self.actions[1:]
+        # Moving selected action to the bottom of the priority queue
+        # Do not append actions which occour only once per day
+        if action not in self.daily_action:
+            self.actions.append(action)
+        
+        print(self.actions)
 
         print(f"Executing {action}...")
-
+        
+        # Make sure the bot is idle
         if self.IDLE == 1:
             if action == 'NM':
                 self.IDLE = 0
@@ -71,6 +110,7 @@ class Raider():
                 clan_boss = ClanBoss('NM')
                 clan_boss.to_clan_boss()
                 time.sleep(900)
+
                 self.IDLE = 1
 
             elif action == 'UNM':
@@ -94,6 +134,18 @@ class Raider():
                 print('Bot: IDLE')
                 self.IDLE = 1
                     
+            elif action == 'minotaur':
+                #set idle 
+                self.IDLE = 0
+
+                d = Dungeon('minotaur', 100, refill=True)
+                d.minotaur()
+
+                time.sleep(1)
+
+                print('Bot: IDLE')
+                self.IDLE = 1
+
             elif action == 'arena':
 
                 #set idle 
@@ -158,7 +210,7 @@ class Raider():
                 self.IDLE = 1
                
 
-raid = Raider('CB')
+raid = Raider()
 
 while True:
     
