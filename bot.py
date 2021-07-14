@@ -10,6 +10,16 @@ from arena import Arena
 from routines import Routine
 import database
 
+'''
+Game settings -
+Graphics Quality: Low
+Frame Rate Limit: 60 FPS
+Resolution 1280x720
+
+GAME_RESOLUTION = (1280, 720)
+
+'''
+
 class Raider():
 
     def __init__(self, action=None):
@@ -22,7 +32,7 @@ class Raider():
         self.daily_action = ['UNM', 'NM', 'routine']
 
         self.user_action = action
-        temperature = dict.fromkeys(self.actions, 1)
+        #temperature = dict.fromkeys(self.actions, 1)
 
         self.IDLE = 1
         self.market_refresh = None
@@ -70,7 +80,7 @@ class Raider():
                 self.actions.insert(1,'routine')
                 self.database.update_value('routine')
 
-        if isNowInTimePeriod(dt.time(12,30), dt.time(13, 00), dt.datetime.now().time()) and self.cb_UMM == 0:
+        if isNowInTimePeriod(dt.time(12,20), dt.time(13, 00), dt.datetime.now().time()) and self.cb_UMM == 0:
             # Insert UNM as priority 1
             if 'UNM' not in self.actions:
                 self.actions.insert(0,'UNM')
@@ -78,7 +88,7 @@ class Raider():
                 self.database.update_value('UNM')
             
 
-        elif isNowInTimePeriod(dt.time(18,40), dt.time(21,30), dt.datetime.now().time()) and self.cb_MM == 0:
+        elif isNowInTimePeriod(dt.time(19,30), dt.time(21,30), dt.datetime.now().time()) and self.cb_MM == 0:
              # Insert NM as priority 1
             if 'NM' not in self.actions:
                 self.actions.insert(0,'NM')
@@ -133,7 +143,18 @@ class Raider():
 
                 print('Bot: IDLE')
                 self.IDLE = 1
-                    
+            elif action == 'dragon':
+                #set idle 
+                self.IDLE = 0
+
+                d = Dungeon('dragon', 100, refill=True)
+                d.dragon()
+
+                time.sleep(1)
+
+                print('Bot: IDLE')
+                self.IDLE = 1
+
             elif action == 'minotaur':
                 #set idle 
                 self.IDLE = 0

@@ -35,7 +35,7 @@ class Arena():
 
     def arena_fight(self):
 
-        '''
+        
         if pyautogui.locateOnScreen('./images/tag_arena_refresh.png') != None:
             locate_and_click('tag_arena_refresh')
             # Edit, located start after refrest
@@ -45,7 +45,7 @@ class Arena():
             locate_and_click('refresh_arena_classic')
             # Edit, located start after refrest
             locate_and_click('classic_arena_start')
-        '''
+        
         # Find the battle location and click to begin
         if pyautogui.locateOnScreen('./images/classic_arena_battle.png', confidence=0.8) != None:
             locate_and_click('classic_arena_battle')
@@ -68,7 +68,7 @@ class Arena():
                 start = time.time()
                 while self.STATE == 1:
                     time.sleep(2)
-                    if pyautogui.locateOnScreen('./images/defeat_arena.png', confidence=0.9) != None:
+                    if pyautogui.locateOnScreen('./images/defeat_arena.png') != None:
                         print('Lost game, regresing list')
                         pyautogui.press('esc')
                         time.sleep(2)
@@ -87,9 +87,10 @@ class Arena():
                         
                     elif pyautogui.locateOnScreen('./images/victory_arena.png') != None:
                         pyautogui.press('esc')
-                        time.sleep(1)
+                        time.sleep(3)
                         if self.arena_type != 'classic':
                                 pyautogui.press('esc')
+                                time.sleep(1)
                         break
                         #
                     # Need to create a blacklist system for lost matches. 

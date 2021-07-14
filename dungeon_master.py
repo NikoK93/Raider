@@ -76,10 +76,10 @@ class Dungeon():
 
         faction_wars_stages = {
             'dark_elves': 1,
-            'sacred_order':1,
+            'sacred_order':12,
             'banner_lords':1,
             'barbarians': 1,
-            'dwarfs': 1,
+            'dwarfs': 5,
             'knight_revenant':1,
             'lizardmen':11,
             'skinwalkers':9,
@@ -136,7 +136,7 @@ class Dungeon():
                                         time.sleep(2)
                                         pyautogui.press('esc')
                                         time.sleep(2)
-                                        break
+                                        continue
                                 elif pyautogui.locateOnScreen('./images/victory_fw.png', confidence=0.8) != None:
                                     # Record status
                                     self.victory +=1
@@ -150,7 +150,7 @@ class Dungeon():
                                         time.sleep(2)
                                         pyautogui.press('esc')
                                         time.sleep(2)
-                                        break
+                                        continue
                         
                         return key      
             return False
@@ -260,6 +260,72 @@ class Dungeon():
         '''
         go_to_stage(15)
 
+    
+
+        time.sleep(2)
+        if pyautogui.locateOnScreen('./images/energy_refill.png', confidence=0.8) != None:
+            if self.energy_refill == True:
+                locate_and_click('energy_refill_dungeons', conf=0.8)
+
+            else:
+                self.STATE = 0
+                
+
+        locate_and_click('minotaur_start', conf=0.6)
+
+        if self.STATE == 1:
+            while self.runs >= 1:
+                time.sleep(2)
+                if pyautogui.locateOnScreen('./images/replay_minotaur.png') == None:
+                    print(f'Waiting for the game to finish, round: {self.runs}. Win/loss: {self.victory}-{self.defeat}')
+                else:
+                    if pyautogui.locateOnScreen('./images/victory_minotaur.png', confidence=0.9) != None:
+                        self.victory +=1
+
+                    elif pyautogui.locateOnScreen('./images/defeat_spider.png', confidence=0.9) != None:
+                        self.defeat +=1
+
+                    self.runs -= 1
+                    if self.runs >= 1:
+                        #check if daimond refresh
+                        locate_and_click('replay_minotaur')
+    
+                        if pyautogui.locateOnScreen('./images/gem_energy_refill.png') != None:
+                            print('Aborting, no gem refills.')
+                            self.STATE = 0
+                            break
+                        else:
+                            if self.energy_refill == True:
+                                time.sleep(2)
+                                if pyautogui.locateOnScreen('./images/energy_refill.png', confidence=0.8) != None:
+                                    locate_and_click('energy_refill_dungeons', conf=0.8)
+                                    time.sleep(2)
+                                    locate_and_click('replay_minotaur')
+                            
+                            
+                    else:   
+                        print('Finished games')
+                        self.STATE = 0
+                        break
+
+    def dragon(self, stage=25):
+
+        go_to_base()
+
+        locate_and_click('rsl')
+        # Battle location
+        adjusted_click(505.0, 310.5)
+
+        locate_and_click('dungeons', 0.7)
+
+        mouse_position = pyautogui.position()
+        pyautogui.dragTo(mouse_position[0]- 1000, mouse_position[1], duration=5)
+        
+        
+        locate_and_click('dragon', 0.7)
+
+        go_to_stage(stage)
+
         time.sleep(2)
         if pyautogui.locateOnScreen('./images/energy_refill.png', confidence=0.8) != None:
             if self.energy_refill == True:
@@ -268,7 +334,7 @@ class Dungeon():
                 click_element(x + 400, y +190)
             else:
                 self.STATE = 0
-                
+    
 
         locate_and_click('minotaur_start')
 
@@ -306,4 +372,5 @@ class Dungeon():
                         print('Finished games')
                         self.STATE = 0
                         break
+        
         

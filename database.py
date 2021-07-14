@@ -95,11 +95,11 @@ class DataBaseManager():
             except:
                 print('index out fo range')
 
-#d = DataBaseManager()
+d = DataBaseManager()
 
 #d.create_table()
 #d.initialize()
-#d.update_value('NM', 0)
+d.update_value('routine', 0)
 #d.insert_datum()
 
 #d.select_data()
