@@ -10,8 +10,6 @@ from arena import Arena
 from routines import Routine
 import database
 
-
-
 '''
 Game settings -
 Graphics Quality: Low
@@ -30,7 +28,7 @@ class Raider():
         self.CENTER_POSITION = open_raid()
 
         # Some default actions
-        self.actions = ['arena', 'tag_arena','minotaur','FW','mini_routine']
+        self.actions = ['minotaur','arena', 'tag_arena','FW','mini_routine']
         self.daily_action = ['UNM', 'NM', 'routine']
 
         self.dungeons = ['force', 'spirit', 'magic', 'void', 'arcane', 'dragon', 'spider', 'ice_golem', 'fire_knight', 'minotaur'] 
@@ -86,7 +84,7 @@ class Raider():
                 self.actions.insert(1,'routine')
                 self.database.update_value('routine')
 
-        if isNowInTimePeriod(dt.time(12,20), dt.time(13, 00), dt.datetime.now().time()) and self.cb_UMM == 0:
+        if isNowInTimePeriod(dt.time(12,20), dt.time(14, 00), dt.datetime.now().time()) and self.cb_UMM == 0:
             # Insert UNM as priority 1
             if 'UNM' not in self.actions:
                 self.actions.insert(0,'UNM')
@@ -136,7 +134,7 @@ class Raider():
                 clan_boss = ClanBoss('NM')
                 clan_boss.to_clan_boss()
                 time.sleep(900)
-
+                print('Bot: IDLE')
                 self.IDLE = 1
 
             elif action == 'UNM':
@@ -146,6 +144,7 @@ class Raider():
                 clan_boss.to_clan_boss()
 
                 time.sleep(900)
+                print('Bot: IDLE')
                 self.IDLE = 1
 
             elif action == 'arena':
@@ -184,6 +183,8 @@ class Raider():
                 self.market_refresh = routine.market_CD
                 print(self.market_refresh)
 
+                time.sleep(1)
+                print('Bot: IDLE')
                 self.IDLE = 1
 
             elif action == 'routine_market_refresh':
@@ -194,13 +195,19 @@ class Raider():
 
                 self.market_refresh = routine.market_CD
                 print(self.market_refresh)
+
+                time.sleep(1)
+                print('Bot: IDLE')
+                self.IDLE = 1
                     
             elif action == 'mini_routine':
 
                 self.IDLE = 0
                 routine = Routine()
                 routine.mini_routine()
-
+                
+                time.sleep(1)
+                print('Bot: IDLE')
                 self.IDLE = 1
 
             elif action == 'FW':
@@ -209,6 +216,8 @@ class Raider():
                 fw = Dungeon('FW', 100, refill=True)
                 fw.faction_wars()
 
+                time.sleep(1)
+                print('Bot: IDLE')
                 self.IDLE = 1
 
             elif action == 'doom_tower':
@@ -217,10 +226,12 @@ class Raider():
                 dungeon = Dungeon('doom_tower', 100, refill=True)
                 dungeon.doom_tower()
 
+                time.sleep(1)
+                print('Bot: IDLE')
                 self.IDLE = 1
                
 
-raid = Raider(account='raid3', action='fire_knight')
+raid = Raider(account='raid3')
 
 while True:
     

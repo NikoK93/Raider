@@ -65,12 +65,16 @@ class Dungeon():
 
         time.sleep(2)
 
-        try:
-            locate_and_click('magma_dragon_raid', wait_time=0.5)
-        except:
+        
+        
+        if pyautogui.locateOnScreen('./images/doom_tower_attack.png', confidence=0.8) != None:
+
             locate_and_click('doom_tower_attack')
             time.sleep(2)
             locate_and_click('start_battle_doom')
+        elif pyautogui.locateOnScreen('./images/magma_dragon_raid.png', confidence=0.8) != None:
+            pass
+
 
         if self.STATE == 1:
             while self.STATE == 1:
@@ -82,17 +86,24 @@ class Dungeon():
                         self.victory +=1
                         self.game_runs +=1
                         locate_and_click('next_dt')
+                        time.sleep(2)
 
-                    elif pyautogui.locateOnScreen('./images/defeat_spider.png', confidence=0.9) != None:
-                        self.defeat +=1
-                        self.game_runs +=1
-                        locate_and_click('next_dt')
-
-                    # If runs more than defined runs, quit
-                    if self.runs != None: 
-                        if self.game_runs >= self.runs:
+                        if pyautogui.locateOnScreen('./images/victory_dt.png', confidence=0.9) != None:
                             self.STATE = 0
                             break
+
+                        time.sleep(2)
+                        locate_and_click('start_battle_doom')
+
+                    elif pyautogui.locateOnScreen('./images/defeat_dt.png', confidence=0.9) != None:
+                        self.defeat +=1
+                        self.game_runs +=1
+
+                        if self.defeat >= 20:
+                            self.STATE = 0
+                            break
+                        locate_and_click('replay_dt')
+
 
                         
 
