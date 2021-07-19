@@ -122,7 +122,10 @@ def go_to_stage(stage):
         adjusted_click(483.0, 281.5)
     else:
         for i in range(stage-5):
+
             adjusted_move(483.0, 281.5)
+            #for i in range(4):
+            #    pyautogui.scroll(-1)
             mouse_position = pyautogui.position()
             pyautogui.dragTo(mouse_position[0], mouse_position[1]-90, duration=0.5)
             time.sleep(2)

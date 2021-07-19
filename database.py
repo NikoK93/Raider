@@ -4,7 +4,9 @@ import datetime
 
 class DataBaseManager():
 
-    def __init__(self):
+    def __init__(self, account):
+
+        self.account = account
 
         self.connection = sqlite3.connect('data.db')
         self.cursor = self.connection.cursor()
@@ -13,17 +15,52 @@ class DataBaseManager():
 
 
         self.cursor.execute("""
-        CREATE TABLE game_data (
+        CREATE TABLE {0} (
             date TEXT PRIMARY KEY,
             UNM INTEGER default 0,
             NM INTEGER default 0,
             routine INTEGER default 0,
             Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-        )""")
+        )""".format(self.account+"_states"))
 
         self.connection.commit()
 
         self.connection.close()
+
+    def create_fw_table(self):
+
+
+        self.cursor.execute("""
+        CREATE TABLE {0} (
+            dark_elves INTEGER default 1,
+            sacred_order INTEGER default 1,
+            banner_lords INTEGER default 1,
+            barbarians INTEGER default 1,
+            dwarfs INTEGER default 1,
+            knight_revenant INTEGER default 1,
+            lizardmen INTEGER default 1,
+            skinwalkers INTEGER default 1,
+            undead_horde INTEGER default 1,
+            demonspawn INTEGER default 1,
+            ogryn_tribe INTEGER default 1,
+            orc INTEGER default 1,
+            high_elves INTEGER default 1
+        )""".format(self.account+"_FW "))
+
+
+        self.connection.commit()
+        self.connection.close()
+
+    def generic_update_value(self, column, value=1):
+
+
+        self.cursor.execute("UPDATE {0} SET {1} = {2}".format(self.account+"_states", column, value))
+   
+        self.connection.commit()
+        #self.connection.close()
+        #self.connection.close()
+        #self.cursor.execute("INSERT INTO game_data(date, UNM) VALUES(CURRENT_DATE , 1)")
+
 
     def create_dungeon_tables(self, dungeon):
 
@@ -49,8 +86,8 @@ class DataBaseManager():
         print(today)
      
         self.cursor.execute("""
-        INSERT OR IGNORE INTO game_data(date, UNM, NM, routine) VALUES (CURRENT_DATE, 0, 0, 0)
-        """)
+        INSERT OR IGNORE INTO {0}(date, UNM, NM, routine) VALUES (CURRENT_DATE, 0, 0, 0)
+        """.format(self.account+"_states"))
    
         self.connection.commit()
         #self.connection.close()
@@ -60,8 +97,8 @@ class DataBaseManager():
     def select_data(self):
 
         self.cursor.execute("""
-        SELECT * FROM game_data WHERE Timestamp>=date('now', 'start of day')
-        """)
+        SELECT * FROM {0} WHERE Timestamp>=date('now', 'start of day')
+        """.format(self.account+"_states"))
         d =  self.cursor.fetchall()
         print(d)
 
@@ -71,7 +108,7 @@ class DataBaseManager():
         today = t.strftime("%Y-%m-%d")
         print(today)
      
-        self.cursor.execute("UPDATE game_data SET {0} = {1} WHERE Timestamp>=date('now', 'start of day')".format(column, value))
+        self.cursor.execute("UPDATE {0} SET {1} = {2} WHERE Timestamp>=date('now', 'start of day')".format(self.account+"_states", column, value))
    
         self.connection.commit()
         #self.connection.close()
@@ -85,7 +122,7 @@ class DataBaseManager():
 
     def get_posts(self, difficulty):
         with self.connection:
-            self.cursor.execute(f"SELECT {difficulty} FROM game_data WHERE Timestamp>=date('now', 'start of day')")
+            self.cursor.execute("SELECT {0} FROM {1} WHERE Timestamp>=date('now', 'start of day')".format(difficulty,self.account+"_states"))
             d =  self.cursor.fetchall()
             #print(d)
             #print(d[0][0])
@@ -95,13 +132,17 @@ class DataBaseManager():
             except:
                 print('index out fo range')
 
-d = DataBaseManager()
+#d = DataBaseManager('raid3')
+
+
+#d.create_fw_table()
+
 
 #d.create_table()
 #d.initialize()
-d.update_value('routine', 0)
+#d.update_value('routine', 1)
 #d.insert_datum()
 
 #d.select_data()
 
-#d.get_posts('UNM')
+#d.get_posts('routine')

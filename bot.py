@@ -10,6 +10,8 @@ from arena import Arena
 from routines import Routine
 import database
 
+
+
 '''
 Game settings -
 Graphics Quality: Low
@@ -22,7 +24,7 @@ GAME_RESOLUTION = (1280, 720)
 
 class Raider():
 
-    def __init__(self, action=None):
+    def __init__(self, account, action=None):
 
         # Get center and open raid
         self.CENTER_POSITION = open_raid()
@@ -31,7 +33,11 @@ class Raider():
         self.actions = ['arena', 'tag_arena','minotaur','FW','mini_routine']
         self.daily_action = ['UNM', 'NM', 'routine']
 
+        self.dungeons = ['force', 'spirit', 'magic', 'void', 'arcane', 'dragon', 'spider', 'ice_golem', 'fire_knight', 'minotaur'] 
+
         self.user_action = action
+        # account information 
+        self.account = account
         #temperature = dict.fromkeys(self.actions, 1)
 
         self.IDLE = 1
@@ -42,7 +48,7 @@ class Raider():
         self.cb_MM = 0
         self.routine = 0
         # Load in the database
-        self.database = database.DataBaseManager()
+        self.database = database.DataBaseManager(account=self.account)
 
         # If no new dateime stamp exists from today, initialie it with fresh values
         if self.database.select_data() == None:
@@ -87,8 +93,7 @@ class Raider():
                 # Write to database
                 self.database.update_value('UNM')
             
-
-        elif isNowInTimePeriod(dt.time(19,30), dt.time(21,30), dt.datetime.now().time()) and self.cb_MM == 0:
+        elif isNowInTimePeriod(dt.time(19,20), dt.time(23,30), dt.datetime.now().time()) and self.cb_MM == 0:
              # Insert NM as priority 1
             if 'NM' not in self.actions:
                 self.actions.insert(0,'NM')
@@ -114,7 +119,18 @@ class Raider():
         
         # Make sure the bot is idle
         if self.IDLE == 1:
-            if action == 'NM':
+            if action in self.dungeons:
+
+                self.IDLE = 0
+
+                dungeon = Dungeon(action, refill=True)
+                dungeon.go_to_dungeon()
+
+                time.sleep(1)
+                print('Bot: IDLE')
+                self.IDLE = 1
+
+            elif action == 'NM':
                 self.IDLE = 0
 
                 clan_boss = ClanBoss('NM')
@@ -130,41 +146,6 @@ class Raider():
                 clan_boss.to_clan_boss()
 
                 time.sleep(900)
-                self.IDLE = 1
-
-            elif action == 'spider':
-                #set idle 
-                self.IDLE = 0
-
-                d = Dungeon('spider', 100, refill=True)
-                d.to_spider()
-
-                time.sleep(1)
-
-                print('Bot: IDLE')
-                self.IDLE = 1
-            elif action == 'dragon':
-                #set idle 
-                self.IDLE = 0
-
-                d = Dungeon('dragon', 100, refill=True)
-                d.dragon()
-
-                time.sleep(1)
-
-                print('Bot: IDLE')
-                self.IDLE = 1
-
-            elif action == 'minotaur':
-                #set idle 
-                self.IDLE = 0
-
-                d = Dungeon('minotaur', 100, refill=True)
-                d.minotaur()
-
-                time.sleep(1)
-
-                print('Bot: IDLE')
                 self.IDLE = 1
 
             elif action == 'arena':
@@ -229,9 +210,17 @@ class Raider():
                 fw.faction_wars()
 
                 self.IDLE = 1
+
+            elif action == 'doom_tower':
+
+                self.IDLE = 0
+                dungeon = Dungeon('doom_tower', 100, refill=True)
+                dungeon.doom_tower()
+
+                self.IDLE = 1
                
 
-raid = Raider()
+raid = Raider(account='raid3', action='fire_knight')
 
 while True:
     

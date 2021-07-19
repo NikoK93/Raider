@@ -30,26 +30,33 @@ class Arena():
 
         self.wins = 0
         self.STATE = 0
+        self.refresh = False
 
         self.arena_type = arena_type
 
+
     def arena_fight(self):
 
-        
-        if pyautogui.locateOnScreen('./images/tag_arena_refresh.png') != None:
-            locate_and_click('tag_arena_refresh')
-            # Edit, located start after refrest
-            locate_and_click('classic_arena_start')
+        if self.refresh == False:
+            try:
+                #pyautogui.locateOnScreen('./images/tag_arena_refresh.png', confidence=0.7) != None:
+                locate_and_click('tag_arena_refresh')
+                self.refresh = True
+                # Edit, located start after refrest
+                #locate_and_click('classic_arena_start')
+            except:
+                print('Refresh not avaliable')
+                
             
-        elif pyautogui.locateOnScreen('./images/refresh_arena_classic.png') != None:
-            locate_and_click('refresh_arena_classic')
+        #elif pyautogui.locateOnScreen('./images/refresh_arena_classic.png', confidence=0.7) != None:
+        #    locate_and_click('refresh_arena_classic')
             # Edit, located start after refrest
-            locate_and_click('classic_arena_start')
+        #    locate_and_click('classic_arena_start')
         
         # Find the battle location and click to begin
         if pyautogui.locateOnScreen('./images/classic_arena_battle.png', confidence=0.8) != None:
             locate_and_click('classic_arena_battle')
-            time.sleep(2)
+            time.sleep(1)
             # Refresh if possible and return False to start finding new matches
             if pyautogui.locateOnScreen('./images/confirm_arena_token.png') != None:
                 locate_and_click("confirm_arena_token")
