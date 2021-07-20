@@ -31,7 +31,7 @@ class Raider():
 
         # Some default actions
         self.actions = ['arena', 'tag_arena','minotaur','FW','mini_routine']
-        self.daily_action = ['UNM', 'NM', 'routine']
+        self.daily_action = ['UNM', 'NM', 'routine', 'routine_market_refresh']
 
         self.dungeons = ['force', 'spirit', 'magic', 'void', 'arcane', 'dragon', 'spider', 'ice_golem', 'fire_knight', 'minotaur'] 
 
@@ -194,6 +194,8 @@ class Raider():
 
                 self.market_refresh = routine.market_CD
                 print(self.market_refresh)
+
+                self.IDLE = 1
                     
             elif action == 'mini_routine':
 
@@ -220,7 +222,7 @@ class Raider():
                 self.IDLE = 1
                
 
-raid = Raider(account='raid3', action='fire_knight')
+raid = Raider(account='raid3')
 
 while True:
     
