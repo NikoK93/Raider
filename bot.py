@@ -28,7 +28,7 @@ class Raider():
         self.CENTER_POSITION = open_raid()
 
         # Some default actions
-        self.actions = ['minotaur','arena', 'tag_arena','FW','mini_routine']
+        self.actions = ["minotaur",'arena', 'tag_arena','FW','mini_routine', 'doom_tower']
         self.daily_action = ['UNM', 'NM', 'routine', 'routine_market_refresh']
 
         self.dungeons = ['force', 'spirit', 'magic', 'void', 'arcane', 'dragon', 'spider', 'ice_golem', 'fire_knight', 'minotaur'] 
@@ -131,19 +131,19 @@ class Raider():
             elif action == 'NM':
                 self.IDLE = 0
 
-                clan_boss = ClanBoss('NM')
+                clan_boss = ClanBoss('NM', self.account)
                 clan_boss.to_clan_boss()
-                time.sleep(900)
+                time.sleep(950)
                 print('Bot: IDLE')
                 self.IDLE = 1
 
             elif action == 'UNM':
                 self.IDLE = 0
 
-                clan_boss = ClanBoss('UNM')
+                clan_boss = ClanBoss('UNM', self.account)
                 clan_boss.to_clan_boss()
 
-                time.sleep(900)
+                time.sleep(950)
                 print('Bot: IDLE')
                 self.IDLE = 1
 
