@@ -172,6 +172,8 @@ class Routine():
 
     def market_refresh(self):
 
+        go_to_base()
+
         if self.market_CD == None:
             self.market_CD = datetime.datetime.now()
             

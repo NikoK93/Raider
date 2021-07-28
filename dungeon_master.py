@@ -22,12 +22,13 @@ from support_functions import locate_and_click, get_center, go_to_base, adjusted
 
 class Dungeon():
 
-    def __init__(self, dungeon, runs=None, refill=False, stage = None):
+    def __init__(self, dungeon, runs=None, refill=False, stage = None, dt_difficulty='normal'):
 
         self.dungeon = dungeon
         self.runs = runs
         self.energy_refill = refill
         self.stage = stage
+        self.dt_difficulty = dt_difficulty
 
         self.potions_keeps = ['force', 'spirit', 'magic', 'void', 'arcane']
         self.dungeons = {'dragon':25,
@@ -51,6 +52,8 @@ class Dungeon():
     def stage_selection(self):
         pass
 
+    def team_selector(self):
+        pass
     def doom_tower(self):
 
         go_to_base()
@@ -65,15 +68,47 @@ class Dungeon():
 
         time.sleep(2)
 
-        
+        if self.dt_difficulty == 'hard':
+            adjusted_click(-507.0, 318.5)
+            time.sleep(2)
+            adjusted_click(-507.0, 254.5)
         
         if pyautogui.locateOnScreen('./images/doom_tower_attack.png', confidence=0.8) != None:
 
-            locate_and_click('doom_tower_attack')
+            locate_and_click('doom_tower_attack', conf=0.7)
             time.sleep(2)
-            locate_and_click('start_battle_doom')
+            locate_and_click('start_battle_doom', conf=0.7)
+
         elif pyautogui.locateOnScreen('./images/magma_dragon_raid.png', confidence=0.8) != None:
             pass
+        elif pyautogui.locateOnScreen('./images/scarab.png', confidence=0.8) != None:
+            locate_and_click('scarab', conf=0.7)
+            time.sleep(2)
+            locate_and_click('team_setup_dt')
+
+            for i in range(15):
+                    pyautogui.scroll(-1)
+            time.sleep(1)
+            locate_and_click('scarab_team', x_adj=-250)
+            time.sleep(2)
+            pyautogui.press('esc')
+
+            locate_and_click('start_battle_doom', conf=0.7)
+
+        elif pyautogui.locateOnScreen('./images/nether_spider.png', confidence=0.8) != None:
+            locate_and_click('nether_spider', conf=0.7)
+            time.sleep(2)
+            locate_and_click('team_setup_dt')
+
+            for i in range(10):
+                    pyautogui.scroll(-1)
+            time.sleep(1)
+            locate_and_click('nether_spider_team', x_adj=-250)
+            time.sleep(2)
+            pyautogui.press('esc')
+
+            locate_and_click('start_battle_doom', conf=0.7)
+
 
 
         if self.STATE == 1:
@@ -82,26 +117,27 @@ class Dungeon():
                 if pyautogui.locateOnScreen('./images/replay_dt.png') == None:
                     print(f'Waiting for the game to finish, round: {self.game_runs+1} Win/loss: {self.victory}-{self.defeat}')
                 else:
-                    if pyautogui.locateOnScreen('./images/victory_dt.png', confidence=0.9) != None:
+                    if pyautogui.locateOnScreen('./images/victory_dt.png', confidence=0.7) != None:
                         self.victory +=1
                         self.game_runs +=1
                         locate_and_click('next_dt')
                         time.sleep(2)
 
-                        if pyautogui.locateOnScreen('./images/victory_dt.png', confidence=0.9) != None:
+                        if pyautogui.locateOnScreen('./images/victory_dt.png', confidence=0.7) != None:
                             self.STATE = 0
                             break
 
                         time.sleep(2)
                         locate_and_click('start_battle_doom')
 
-                    elif pyautogui.locateOnScreen('./images/defeat_dt.png', confidence=0.9) != None:
+                    elif pyautogui.locateOnScreen('./images/defeat_dt.png', confidence=0.7) != None:
                         self.defeat +=1
                         self.game_runs +=1
 
                         if self.defeat >= 20:
                             self.STATE = 0
                             break
+
                         locate_and_click('replay_dt')
 
 
@@ -140,7 +176,7 @@ class Dungeon():
         faction_wars_stages = {
             'dark_elves': 13,
             'sacred_order':12,
-            'banner_lords':15,
+            'banner_lords':14,
             'barbarians': 20,
             'dwarfs': 5,
             'knight_revenant':15,
@@ -262,7 +298,7 @@ class Dungeon():
         # Go to dungeona and enter
         self.drag_to_dungeon_and_click(self.dungeon)
 
-        # Go to designated stage
+        # Go to designated stage, and click start
         if self.stage == None:
             go_to_stage(self.get_defualt_stage(self.dungeon))
         else:
@@ -270,16 +306,25 @@ class Dungeon():
 
 
         time.sleep(2)
-        if pyautogui.locateOnScreen('./images/energy_refill.png', confidence=0.8) != None:
-            if self.energy_refill == True:
+        # Check if energy is avaliable and enter the game
+        if pyautogui.locateOnScreen('./images/energy_refill_dungeons.png', confidence=0.9) != None:
                 locate_and_click('energy_refill_dungeons', conf=0.8)
+                time.sleep(2)
+                adjusted_click(483.0, 281.5)
 
+        # Check for gem refill, and enter if gem refill is true
+        elif pyautogui.locateOnScreen('./images/gem_refill_confirm.png', confidence=0.9) != None:
+            if self.energy_refill:
+                locate_and_click('gem_refill_confirm')
+                time.sleep(2)
+                adjusted_click(483.0, 281.5)
             else:
                 self.STATE = 0
                 
-
+        # Start the game
         locate_and_click('minotaur_start', conf=0.6)
 
+        # Main loop
         if self.STATE == 1:
             while self.STATE == 1:
                 time.sleep(2)
@@ -300,19 +345,26 @@ class Dungeon():
                         if self.game_runs >= self.runs:
                             self.STATE = 0
                             break
-                    #check if daimond refresh
+
+                    # Click replay button
                     locate_and_click('replay_minotaur', conf=0.7)
 
-                    if pyautogui.locateOnScreen('./images/gem_energy_refill.png', confidence=0.8) != None:
-                        print('Aborting, no gem refills.')
-                        self.STATE = 0
-                        break
-                    else:
-                        if self.energy_refill == True:
-                            time.sleep(2)
-                            if pyautogui.locateOnScreen('./images/energy_refill.png', confidence=0.8) != None:
+                    # Check for gem and non-gem refills
+                    if pyautogui.locateOnScreen('./images/energy_refill_dungeons.png', confidence=0.9) != None:
                                 locate_and_click('energy_refill_dungeons', conf=0.8)
                                 time.sleep(2)
                                 locate_and_click('replay_minotaur')
+
+                    elif pyautogui.locateOnScreen('./images/gem_refill_confirm.png', confidence=0.9) != None:
+                        if self.energy_refill:
+                            locate_and_click('gem_refill_confirm')
+                            time.sleep(2)
+                            locate_and_click('replay_minotaur')
+                        else:
+                            print('Aborting, no gem refills.')
+                            self.STATE = 0
+                            break
+
+                            
                         
                         

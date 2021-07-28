@@ -22,13 +22,13 @@ GAME_RESOLUTION = (1280, 720)
 
 class Raider():
 
-    def __init__(self, account, action=None):
+    def __init__(self, account, gem_refill=False, action=None, dt_difficulty='normal'):
 
         # Get center and open raid
         self.CENTER_POSITION = open_raid()
 
         # Some default actions
-        self.actions = ["minotaur",'arena', 'tag_arena','FW','mini_routine', 'doom_tower']
+        self.actions = ['arena','minotaur', 'tag_arena','FW','mini_routine','doom_tower']
         self.daily_action = ['UNM', 'NM', 'routine', 'routine_market_refresh']
 
         self.dungeons = ['force', 'spirit', 'magic', 'void', 'arcane', 'dragon', 'spider', 'ice_golem', 'fire_knight', 'minotaur'] 
@@ -37,6 +37,10 @@ class Raider():
         # account information 
         self.account = account
         #temperature = dict.fromkeys(self.actions, 1)
+        # Gem refill bool
+        self.gem_refill = gem_refill
+        self.dt_difficulty = dt_difficulty
+
 
         self.IDLE = 1
         self.market_refresh = None
@@ -79,19 +83,19 @@ class Raider():
         # Call action refresh 
         self.action_refresh()
 
-        if isNowInTimePeriod(dt.time(10,00), dt.time(18,00), dt.datetime.now().time()) and self.routine == 0:
+        if isNowInTimePeriod(dt.time(7,00), dt.time(18,00), dt.datetime.now().time()) and self.routine == 0:
             if 'routine' not in self.actions:
-                self.actions.insert(1,'routine')
+                self.actions.insert(0,'routine')
                 self.database.update_value('routine')
 
-        if isNowInTimePeriod(dt.time(12,20), dt.time(14, 00), dt.datetime.now().time()) and self.cb_UMM == 0:
+        if isNowInTimePeriod(dt.time(12,10), dt.time(14, 00), dt.datetime.now().time()) and self.cb_UMM == 0:
             # Insert UNM as priority 1
             if 'UNM' not in self.actions:
                 self.actions.insert(0,'UNM')
                 # Write to database
                 self.database.update_value('UNM')
             
-        elif isNowInTimePeriod(dt.time(19,20), dt.time(23,30), dt.datetime.now().time()) and self.cb_MM == 0:
+        elif isNowInTimePeriod(dt.time(18,30), dt.time(23,30), dt.datetime.now().time()) and self.cb_MM == 0:
              # Insert NM as priority 1
             if 'NM' not in self.actions:
                 self.actions.insert(0,'NM')
@@ -121,7 +125,7 @@ class Raider():
 
                 self.IDLE = 0
 
-                dungeon = Dungeon(action, refill=True)
+                dungeon = Dungeon(action, refill=self.gem_refill)
                 dungeon.go_to_dungeon()
 
                 time.sleep(1)
@@ -213,7 +217,7 @@ class Raider():
             elif action == 'FW':
 
                 self.IDLE = 0
-                fw = Dungeon('FW', 100, refill=True)
+                fw = Dungeon('FW', 100, refill=self.gem_refill)
                 fw.faction_wars()
 
                 time.sleep(1)
@@ -223,7 +227,7 @@ class Raider():
             elif action == 'doom_tower':
 
                 self.IDLE = 0
-                dungeon = Dungeon('doom_tower', 100, refill=True)
+                dungeon = Dungeon('doom_tower', 100, refill=self.gem_refill, dt_difficulty=self.dt_difficulty)
                 dungeon.doom_tower()
 
                 time.sleep(1)
@@ -231,7 +235,7 @@ class Raider():
                 self.IDLE = 1
                
 
-raid = Raider(account='raid3')
+raid = Raider(account='raid3', dt_difficulty='hard')
 
 while True:
     

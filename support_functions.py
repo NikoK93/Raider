@@ -90,7 +90,7 @@ def go_to_base():
     Return the user from any point to the base of the game. 
     '''
     while (True):
-        time.sleep(1)
+        time.sleep(2)
         if pyautogui.locateOnScreen('./images/exit_game.png', confidence=0.7) != None:
             pyautogui.press('esc')
             print('Arrived at base')

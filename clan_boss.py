@@ -39,7 +39,7 @@ class ClanBoss():
                 locate_and_click('team_UNM', conf=0.9, x_adj=-250)
             elif self.account == 'raid2':
                 locate_and_click('team_UNM_raid2', conf=0.9, x_adj=-250)
-                
+
             pyautogui.press('esc')
             locate_and_click("start_on_auto_ON", x_adj=-100, conf=0.9)
             locate_and_click('clan_boss_start', conf=0.9)
@@ -52,7 +52,10 @@ class ClanBoss():
             while True:
                 if pyautogui.locateOnScreen('./images/cb_replay.png') != None:
                     locate_and_click('cb_replay', conf=0.9)
-                    unm_custom()
+                    if self.account == 'raid3':
+                        unm_custom()
+                    elif self.account == 'raid2':
+                        unm_custom_raid2()
                     break
                 time.sleep(20)
 
@@ -67,7 +70,6 @@ class ClanBoss():
             elif self.account == 'raid2':
                 locate_and_click('team_NM_raid2', conf=0.9, x_adj=-250)
 
-            locate_and_click('team_NM', conf=0.9, x_adj=-250)
             pyautogui.press('esc')
             locate_and_click("start_on_auto_ON", x_adj=-100, conf=0.9)
             locate_and_click('clan_boss_start', conf=0.9)

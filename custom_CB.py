@@ -4,56 +4,69 @@ from support_functions import locate_and_click, click_element, adjusted_click
 
 def unm_custom_raid2():
 
-    time.sleep(5)
+    time.sleep(10)
 
     #dutches shield
     locate_and_click('rsl')
     pyautogui.press('w')
     adjusted_click(-108, 269)
-
+    time.sleep(5)
     # hotatsu aa
-    locate_and_click('cb',conf=0.5,  wait_time=5)
+    pyautogui.press('a') 
+    adjusted_click(35, -26)
+    time.sleep(10)
     
     # ROUND 2
-
+    time.sleep(3)
     # Farakhin poison ---------------
     pyautogui.press('w') 
-    locate_and_click('cb', conf=0.5,  wait_time=4)
+    adjusted_click(35, -26)
+    time.sleep(5)
     
     # Vizier AA
-    locate_and_click('cb', conf=0.5,  wait_time=4)
+    adjusted_click(35, -26)
+    time.sleep(5)
 
     # Martyr AA
-    locate_and_click('cb', conf=0.5,  wait_time=4)
+    adjusted_click(35, -26)
+    time.sleep(5)
 
     # Lilithu AA
-    locate_and_click('cb', conf=0.5,  wait_time=4)
+    adjusted_click(35, -26)
+    time.sleep(5)
 
     # Hotatsu A3 ---------------
     pyautogui.press('e')
     adjusted_click(-108, 269)
+    time.sleep(10)
 
     # ROUND 3
 
     # Farakhin Ally attack
     pyautogui.press('e') 
-    locate_and_click('cb', conf=0.5,  wait_time=4)
+    adjusted_click(35, -26)
+    time.sleep(10)
     
     # duthcess AA
-    locate_and_click('cb', conf=0.5,  wait_time=4)
+    adjusted_click(35, -26)
+    time.sleep(5)
 
     # vizier AA
-    locate_and_click('cb', conf=0.5,  wait_time=4)
+    adjusted_click(35, -26)
+    time.sleep(5)
 
     # Martyr A3
     pyautogui.press('e')
-    locate_and_click('cb', conf=0.5,  wait_time=4)
+    adjusted_click(35, -26)
+    time.sleep(5)
 
     # Hotatsu A2
     pyautogui.press('w')
-    locate_and_click('cb', conf=0.5,  wait_time=4)
+    adjusted_click(35, -26)
+    time.sleep(4)
 
     # ROUND 4
+
 
     # pyautogui.press('w') 
     locate_and_click('auto', conf=0.8)
@@ -61,24 +74,26 @@ def unm_custom_raid2():
 
 def nm_custom_raid2():
 
-    time.sleep(5)
+    time.sleep(10)
 
     locate_and_click('rsl')
     #pyautogui.press('w')
     #adjusted_click(-108, 269)
 
     #dutches AA
-    locate_and_click('cb',conf=0.5,  wait_time=5)
+    adjusted_click(35, -26)
+    time.sleep(5)
     
     #bad el W 
     pyautogui.press('w')
     adjusted_click(-108, 269)
+    time.sleep(5)
     #locate_and_click('cb', conf=0.5,  wait_time=4)
     
     # Farakhin Ally attack
     pyautogui.press('e')
-    adjusted_click(-108, 269)
-    locate_and_click('cb', conf=0.5,  wait_time=4)
+    adjusted_click(35, -26)
+    time.sleep(5)
 
    
     locate_and_click('auto', conf=0.8)
@@ -86,7 +101,7 @@ def nm_custom_raid2():
 
 def unm_custom():
 
-    time.sleep(5)
+    time.sleep(10)
 
     locate_and_click('rsl')
     pyautogui.press('e')
@@ -224,74 +239,94 @@ def unm_custom():
 
 def nightmare_custom():
 
-    time.sleep(5)
+    time.sleep(10)
 
     #Round 1
     #Roschard
     locate_and_click('rsl')
-    locate_and_click('cb', conf=0.6,  wait_time=4)
+    adjusted_click(35, -26)
+    time.sleep(5)
 
     # Support
-    locate_and_click('cb', conf=0.6,  wait_time=4)
+    adjusted_click(35, -26)
+    time.sleep(5)
     
     #banshee
     pyautogui.press('e')
-    locate_and_click('cb',conf=0.6,  wait_time=4)
+    adjusted_click(35, -26)
+    time.sleep(5)
 
     # Septimus
     pyautogui.press('w')
-    locate_and_click('cb',conf=0.6,  wait_time=4)
+    adjusted_click(35, -26)
+    time.sleep(5)
 
     # Valkyrie - CA
     pyautogui.press('w')
-    locate_and_click('cb',conf=0.6,  wait_time=10)
+    adjusted_click(35, -26)
+    time.sleep(10)
 
     #Round 2
     #Roschard
-    locate_and_click('cb', conf=0.6,  wait_time=4)
+    adjusted_click(35, -26)
+    time.sleep(5)
 
     # Support
-    locate_and_click('cb', conf=0.6,  wait_time=4)
+    adjusted_click(35, -26)
+    time.sleep(5)
     
     #banshee
-    locate_and_click('cb',conf=0.6,  wait_time=4)
+    adjusted_click(35, -26)
+    time.sleep(5)
 
     # Septimus
-    locate_and_click('cb',conf=0.6,  wait_time=4)
+    adjusted_click(35, -26)
+    time.sleep(5)
 
     # Roschard
-    locate_and_click('cb',conf=0.6,  wait_time=4)
+    adjusted_click(35, -26)
+    time.sleep(5)
 
     # Valkyrie 
-    locate_and_click('cb',conf=0.6,  wait_time=10)
+    adjusted_click(35, -26)
+    time.sleep(10)
 
 
     #Round 3
     #Support
-    locate_and_click('cb', conf=0.6,  wait_time=4)
+    adjusted_click(35, -26)
+    time.sleep(5)
 
     # Banshee
-    locate_and_click('cb', conf=0.6,  wait_time=4)
+    adjusted_click(35, -26)
+    time.sleep(5)
     
     #Roschard
-    locate_and_click('cb',conf=0.6,  wait_time=4)
+    adjusted_click(35, -26)
+    time.sleep(5)
 
     # Septimus
-    locate_and_click('cb',conf=0.6,  wait_time=4)
+    adjusted_click(35, -26)
+    time.sleep(5)
 
     # Roschard
-    locate_and_click('cb',conf=0.6,  wait_time=4)
+    adjusted_click(35, -26)
+    time.sleep(5)
 
     # Valkyrie 
-    locate_and_click('cb',conf=0.6,  wait_time=5)
+    adjusted_click(35, -26)
+    time.sleep(10)
 
 
     #Round 4
     #Support
-    locate_and_click('cb', conf=0.6,  wait_time=4)
+    time.sleep(4)
+    adjusted_click(35, -26)
+    time.sleep(5)
 
     # Roschard - last move on manual
-    locate_and_click('cb', conf=0.6,  wait_time=4)
+    adjusted_click(35, -26)
+    time.sleep(5)
     
     #auto 
     #locate_and_click('rsl')
