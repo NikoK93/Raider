@@ -159,6 +159,7 @@ class Dungeon():
             'sacred_order':(165, -33),
             'banner_lords':(348, -170),
             'barbarians': (388, 128),
+            'orc':(-181, -34),
             'dwarfs': (579, -22)
         }
 
@@ -169,7 +170,6 @@ class Dungeon():
             'undead_horde':(-14, -32),
             'demonspawn':(138, -177),
             'ogryn_tribe':(271, 139),
-            'orc':(-368, -23),
             'high_elves':(462, -193)
         }
 
@@ -185,8 +185,8 @@ class Dungeon():
             'undead_horde':20,
             'demonspawn': 15,
             'ogryn_tribe':11,
-            'orc':7,
-            'high_elves': 20
+            'orc':6,
+            'high_elves': 21
         }      
 
         def battle(key, value):
@@ -331,7 +331,10 @@ class Dungeon():
                 if pyautogui.locateOnScreen('./images/replay_minotaur.png', confidence=0.8) == None:
                     print(f'Waiting for the game to finish, round: {self.game_runs+1}. Win/loss: {self.victory}-{self.defeat}')
                 else:
-                    if pyautogui.locateOnScreen('./images/victory_minotaur.png', confidence=0.9) != None:
+                    if pyautogui.locateOnScreen('./images/level_up.png', confidence=0.9) != None:
+                        pyautogui.press('esc')
+                        
+                    elif pyautogui.locateOnScreen('./images/victory_minotaur.png', confidence=0.9) != None:
                         self.victory +=1
                         self.game_runs +=1
 

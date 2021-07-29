@@ -28,7 +28,7 @@ class Raider():
         self.CENTER_POSITION = open_raid()
 
         # Some default actions
-        self.actions = ['arena','minotaur', 'tag_arena','FW','mini_routine','doom_tower']
+        self.actions = ['arena','minotaur', 'tag_arena','FW','doom_tower','mini_routine']
         self.daily_action = ['UNM', 'NM', 'routine', 'routine_market_refresh']
 
         self.dungeons = ['force', 'spirit', 'magic', 'void', 'arcane', 'dragon', 'spider', 'ice_golem', 'fire_knight', 'minotaur'] 
