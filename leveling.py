@@ -22,6 +22,8 @@ class AutoLeveler():
 
     def __init__(self, refill, runs_left=0, minimum_star=2):
 
+        # Difficulty
+        self.difficulty = 'brutal'
         # Gem refill bool
         self.energy_refill = refill
         # Runs left from previous leveling
@@ -166,7 +168,25 @@ class AutoLeveler():
            
             # Battle location
             adjusted_click(505.0, 310.5)
-            locate_and_click('campaing_location', 0.8)  
+            locate_and_click('campaing_location', 0.8)
+
+            # Select difficulty, default = brutal
+            adjusted_click(-507.0, 318.5)
+            time.sleep(2)
+            # Nightmate loc
+            if self.difficulty == 'nightmare':  
+                adjusted_click(-507.0, 254.5)
+            # Brutal loc
+            elif self.difficulty == 'brutal':
+                adjusted_click(-507.0, 200.5)
+            # Hard loc  
+            elif self.difficulty == 'hard':
+                adjusted_click(-507.0, 130.5) 
+            # Normal loc  
+            elif self.difficulty == 'normal':
+                adjusted_click(-507.0, 40.5)
+
+            time.sleep(2)    
 
             # Move to 12-3
             x,y = get_center()
@@ -245,7 +265,7 @@ class AutoLeveler():
                         self.runs_left = 0
                         # updating runs left to database
                         self.database.update_leveling_value(0)
-                        
+
                         break
 
                     # Click replay button

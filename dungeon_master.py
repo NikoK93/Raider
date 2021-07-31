@@ -54,6 +54,7 @@ class Dungeon():
 
     def team_selector(self):
         pass
+
     def doom_tower(self):
 
         go_to_base()
@@ -73,42 +74,14 @@ class Dungeon():
             time.sleep(2)
             adjusted_click(-507.0, 254.5)
         
-        if pyautogui.locateOnScreen('./images/doom_tower_attack.png', confidence=0.8) != None:
-
+       
+        if pyautogui.locateOnScreen('./images/doom_tower_attack.png') != None:
             locate_and_click('doom_tower_attack', conf=0.7)
             time.sleep(2)
             locate_and_click('start_battle_doom', conf=0.7)
-
-        elif pyautogui.locateOnScreen('./images/magma_dragon_raid.png', confidence=0.8) != None:
-            pass
-        elif pyautogui.locateOnScreen('./images/scarab.png', confidence=0.8) != None:
-            locate_and_click('scarab', conf=0.7)
-            time.sleep(2)
-            locate_and_click('team_setup_dt')
-
-            for i in range(15):
-                    pyautogui.scroll(-1)
-            time.sleep(1)
-            locate_and_click('scarab_team', x_adj=-250)
-            time.sleep(2)
-            pyautogui.press('esc')
-
-            locate_and_click('start_battle_doom', conf=0.7)
-
-        elif pyautogui.locateOnScreen('./images/nether_spider.png', confidence=0.8) != None:
-            locate_and_click('nether_spider', conf=0.7)
-            time.sleep(2)
-            locate_and_click('team_setup_dt')
-
-            for i in range(10):
-                    pyautogui.scroll(-1)
-            time.sleep(1)
-            locate_and_click('nether_spider_team', x_adj=-250)
-            time.sleep(2)
-            pyautogui.press('esc')
-
-            locate_and_click('start_battle_doom', conf=0.7)
-
+        else:
+            print('Boss stage, aborting')
+            self.STATE = 0
 
 
         if self.STATE == 1:
@@ -122,13 +95,18 @@ class Dungeon():
                         self.game_runs +=1
                         locate_and_click('next_dt')
                         time.sleep(2)
-
+                        
+                        # if victory still present, we're out of key, break
                         if pyautogui.locateOnScreen('./images/victory_dt.png', confidence=0.7) != None:
                             self.STATE = 0
-                            break
-
-                        time.sleep(2)
-                        locate_and_click('start_battle_doom')
+                            break  
+                        # elif roster is empty, we're at boss stage, break
+                        elif pyautogui.locateOnScreen('./images/boss_stage.png', confidence=0.8) != None:
+                            self.STATE = 0
+                            break  
+                        else:
+                            time.sleep(2)
+                            locate_and_click('start_battle_doom')
 
                     elif pyautogui.locateOnScreen('./images/defeat_dt.png', confidence=0.7) != None:
                         self.defeat +=1

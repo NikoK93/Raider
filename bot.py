@@ -24,13 +24,13 @@ GAME_RESOLUTION = (1280, 720)
 
 class Raider():
 
-    def __init__(self, account, gem_refill=False, action=None, star_leveling=2,  dt_difficulty='normal'):
+    def __init__(self, account, dungeon, gem_refill=False, action=None, star_leveling=2,  dt_difficulty='normal'):
 
         # Get center and open raid
         self.CENTER_POSITION = open_raid()
 
         # Some default actions
-        self.actions = ['arena','leveling','minotaur', 'tag_arena','FW','doom_tower','mini_routine']
+        self.actions = ['arena','leveling', dungeon, 'tag_arena','FW','doom_tower','mini_routine']
         self.daily_action = ['UNM', 'NM', 'routine', 'routine_market_refresh']
 
         self.dungeons = ['force', 'spirit', 'magic', 'void', 'arcane', 'dragon', 'spider', 'ice_golem', 'fire_knight', 'minotaur'] 
@@ -128,7 +128,7 @@ class Raider():
         
         # Make sure the bot is idle
         if self.IDLE == 1:
-            if action == 'Leveling':
+            if action == 'leveling':
 
                 self.IDLE = 0
 
@@ -253,7 +253,7 @@ class Raider():
                 self.IDLE = 1
                
 
-raid = Raider(account='raid3', action='Leveling',dt_difficulty='hard')
+raid = Raider(account='raid3', action='leveling', dungeon='minotaur',  dt_difficulty='hard')
 
 while True:
     

@@ -101,7 +101,7 @@ class Routine():
         time.sleep(1)
         adjusted_click(-587.0, -286)
         time.sleep(1)
-        locate_and_click('collect_login')
+    
 
     def arena_shop(self):
 
@@ -222,6 +222,14 @@ class Routine():
         time.sleep(2)
         locate_and_click('campaing_location')
         time.sleep(2)
+
+        # Select difficulty, default = brutal
+        adjusted_click(-507.0, 318.5)
+        time.sleep(2)
+        # Normal loc
+        adjusted_click(-507.0, 40.5)
+
+        time.sleep(2)
         locate_and_click('clerog_castle')
         time.sleep(2)
         for i in range(7):
@@ -249,6 +257,14 @@ class Routine():
         time.sleep(2)
         locate_and_click('campaing_location')
         time.sleep(2)
+
+        # Select difficulty, default = brutal
+        adjusted_click(-507.0, 318.5)
+        time.sleep(2)
+        # Normal loc
+        adjusted_click(-507.0, 40.5)
+        time.sleep(2)
+
         locate_and_click('clerog_castle')
         time.sleep(2)
         for i in range(7):
@@ -277,13 +293,13 @@ class Routine():
         pyautogui.dragTo(mouse_position[0]+ 500, mouse_position[1]+400, duration=5)
 
         adjusted_click(-156.0, 93.5)
-        time.sleep(1)
+        time.sleep(2)
         locate_and_click('summon_green')
-        time.sleep(3)
+        time.sleep(4)
         locate_and_click('summon_green_2')
-        time.sleep(3)
+        time.sleep(4)
         locate_and_click('summon_green_2')
-        time.sleep(3)
+        time.sleep(4)
         go_to_base()
 
     def daily_quests_collect(self):
