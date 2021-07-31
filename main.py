@@ -342,7 +342,14 @@ def generate_cords():
     a = iter(positions)
 
     return a
-
+        
+    def training_data_utils(self):
+        
+        while True:
+            user_input = input('Star')
+            if user_input == 1:
+                screen = self.hero_screenshot()
+                
 def add_leveling_heroes():
     
     #locate_and_click("market_refresh", conf=0.6)
@@ -378,7 +385,7 @@ def add_leveling_heroes():
     
     time.sleep(1)
 
-    #deselect()
+    deselect()
 
     #locate_all_and_click('mystery_shard_market')
     #match_all('get_mystery')

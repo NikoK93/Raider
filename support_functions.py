@@ -136,6 +136,28 @@ def go_to_stage(stage):
 
         adjusted_click(483.0, 281.5)
 
+def training_data_utils():
+
+    
+    while True:
+        loop_time = time.time()
+        user_input = input('Star')
+
+        if str(user_input) == "1":
+            screen = self.hero_screenshot()
+            cv.imwrite(f'./classifier/train/one/one_{str(loop_time)}.jpg', screen)
+        elif str(user_input) == "2":
+            screen = self.hero_screenshot()
+            cv.imwrite(f'./classifier/train/two/two_{str(loop_time)}.jpg', screen)
+        elif str(user_input) == "3":
+            screen = self.hero_screenshot()
+            cv.imwrite(f'./classifier/train/three/three_{str(loop_time)}.jpg', screen)
+        elif str(user_input) == "4":
+            screen = self.hero_screenshot()
+            cv.imwrite(f'./classifier/train/four/four_{str(loop_time)}.jpg', screen)
+        elif str(user_input) == "5":
+            screen = self.hero_screenshot()
+            cv.imwrite(f'./classifier/train/five/five_{str(loop_time)}.jpg', screen)
 #get_difference()
 
 

@@ -4,7 +4,7 @@ import datetime
 
 class DataBaseManager():
 
-    def __init__(self, account):
+    def __init__(self, account='raid3'):
 
         self.account = account
 
@@ -46,6 +46,19 @@ class DataBaseManager():
             orc INTEGER default 1,
             high_elves INTEGER default 1
         )""".format(self.account+"_FW "))
+
+
+        self.connection.commit()
+        self.connection.close()
+
+    def create_leveling_table(self):
+
+
+        self.cursor.execute("""
+        CREATE TABLE {0} (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            run INTEGER default 0
+        )""".format("AutoLeveler"))
 
 
         self.connection.commit()
@@ -115,6 +128,30 @@ class DataBaseManager():
         #self.connection.close()
         #self.cursor.execute("INSERT INTO game_data(date, UNM) VALUES(CURRENT_DATE , 1)")
 
+    #def update_leveling_value(self, value):
+
+     
+    #    self.cursor.execute("INSERT INTO AutoLeveler VALUES ({0}, {1})".format(0, value))
+    #    self.connection.commit()
+    
+    def update_leveling_value(self, value):
+
+     
+        self.cursor.execute("UPDATE AutoLeveler SET run = {0} WHERE id = 0".format(value))
+        self.connection.commit()
+
+    def get_levling_value(self):
+
+        with self.connection:
+            self.cursor.execute("SELECT * FROM AutoLeveler ORDER BY run DESC LIMIT 1")
+            d =  self.cursor.fetchall()
+            #print(d[0][1])
+            try:
+                return d[0][1]
+            except:
+                print('index out fo range')
+            #self.connection.commit()
+
     def insert_datum(self):
 
         today = datetime.date.today()
@@ -135,9 +172,10 @@ class DataBaseManager():
 #d = DataBaseManager('raid3')
 
 
-#d.create_fw_table()
+#d.create_leveling_table()
 
-
+#d.get_levling_value()
+#d.update_leveling_value(0)
 #d.create_table()
 #d.initialize()
 #d.update_value('routine', 1)

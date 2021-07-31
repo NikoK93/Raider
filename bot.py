@@ -2,6 +2,7 @@ import time
 import numpy as np
 import datetime as dt
 
+from leveling import AutoLeveler
 from clan_boss import ClanBoss
 from clan_boss import unm_custom, nightmare_custom
 from dungeon_master import Dungeon
@@ -9,6 +10,7 @@ from support_functions import open_raid, isNowInTimePeriod
 from arena import Arena
 from routines import Routine
 import database
+
 
 '''
 Game settings -
@@ -22,13 +24,13 @@ GAME_RESOLUTION = (1280, 720)
 
 class Raider():
 
-    def __init__(self, account, gem_refill=False, action=None, dt_difficulty='normal'):
+    def __init__(self, account, gem_refill=False, action=None, star_leveling=2,  dt_difficulty='normal'):
 
         # Get center and open raid
         self.CENTER_POSITION = open_raid()
 
         # Some default actions
-        self.actions = ['arena','minotaur', 'tag_arena','FW','doom_tower','mini_routine']
+        self.actions = ['arena','leveling','minotaur', 'tag_arena','FW','doom_tower','mini_routine']
         self.daily_action = ['UNM', 'NM', 'routine', 'routine_market_refresh']
 
         self.dungeons = ['force', 'spirit', 'magic', 'void', 'arcane', 'dragon', 'spider', 'ice_golem', 'fire_knight', 'minotaur'] 
@@ -40,6 +42,7 @@ class Raider():
         # Gem refill bool
         self.gem_refill = gem_refill
         self.dt_difficulty = dt_difficulty
+        self.star_leveling = star_leveling
 
 
         self.IDLE = 1
@@ -49,6 +52,9 @@ class Raider():
         self.cb_UMM = 0
         self.cb_MM = 0
         self.routine = 0
+        # Saved leveling runs left 
+        self.leveling_runs = 0
+
         # Load in the database
         self.database = database.DataBaseManager(account=self.account)
 
@@ -63,6 +69,7 @@ class Raider():
         self.cb_UMM = self.database.get_posts(difficulty='UNM')
         self.cb_MM =self.database.get_posts(difficulty='NM')
         self.routine = self.database.get_posts(difficulty='routine')
+        self.leveling_runs = self.database.get_levling_value()
 
         print(f" NM status: {self.cb_MM}, UNM status: {self.cb_UMM}, Routine status: {self.routine}")
 
@@ -121,7 +128,18 @@ class Raider():
         
         # Make sure the bot is idle
         if self.IDLE == 1:
-            if action in self.dungeons:
+            if action == 'Leveling':
+
+                self.IDLE = 0
+
+                Leveler = AutoLeveler(refill=self.gem_refill,minimum_star=self.star_leveling, runs_left=self.leveling_runs)
+                Leveler.to_leveling()
+
+                time.sleep(1)
+                print('Bot: IDLE')
+                self.IDLE = 1
+
+            elif action in self.dungeons:
 
                 self.IDLE = 0
 
@@ -235,7 +253,7 @@ class Raider():
                 self.IDLE = 1
                
 
-raid = Raider(account='raid3', dt_difficulty='hard')
+raid = Raider(account='raid3', action='Leveling',dt_difficulty='hard')
 
 while True:
     

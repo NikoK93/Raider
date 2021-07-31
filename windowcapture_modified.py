@@ -27,12 +27,13 @@ class WindowCapture:
 
         # get the window size
         window_rect = win32gui.GetWindowRect(self.hwnd)
-        self.w = window_rect[2] - window_rect[0]
-        self.h = window_rect[3] - window_rect[1]
-        print(self.w, self.h)
+        self.w = (window_rect[2]-300) - (window_rect[0])
+        self.h = window_rect[3] - (window_rect[1] + 670)
+        print(window_rect[3], window_rect[1]+500)
+        #print(self.w, self.h)
         # account for the window border and titlebar and cut them off
         border_pixels = 8
-        titlebar_pixels = 400
+        titlebar_pixels = 30
         self.w = self.w - (border_pixels * 2)
         self.h = self.h - titlebar_pixels - border_pixels
         self.cropped_x = border_pixels
