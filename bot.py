@@ -253,7 +253,7 @@ class Raider():
                 self.IDLE = 1
                
 
-raid = Raider(account='raid3', action='leveling', dungeon='minotaur',  dt_difficulty='hard')
+raid = Raider(account='raid3', action='leveling', dungeon='minotaur',  dt_difficulty='hard', gem_refill=True)
 
 while True:
     

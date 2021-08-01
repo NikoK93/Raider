@@ -74,11 +74,12 @@ class Dungeon():
             time.sleep(2)
             adjusted_click(-507.0, 254.5)
         
+        time.sleep(2)
        
-        if pyautogui.locateOnScreen('./images/doom_tower_attack.png') != None:
-            locate_and_click('doom_tower_attack', conf=0.7)
+        if pyautogui.locateOnScreen('./images/doom_tower_attack.png', confidence=0.5) != None:
+            locate_and_click('doom_tower_attack', conf=0.5)
             time.sleep(2)
-            locate_and_click('start_battle_doom', conf=0.7)
+            locate_and_click('start_battle_doom', conf=0.5)
         else:
             print('Boss stage, aborting')
             self.STATE = 0
@@ -87,7 +88,7 @@ class Dungeon():
         if self.STATE == 1:
             while self.STATE == 1:
                 time.sleep(2)
-                if pyautogui.locateOnScreen('./images/replay_dt.png') == None:
+                if pyautogui.locateOnScreen('./images/replay_dt.png', confidence=0.5) == None:
                     print(f'Waiting for the game to finish, round: {self.game_runs+1} Win/loss: {self.victory}-{self.defeat}')
                 else:
                     if pyautogui.locateOnScreen('./images/victory_dt.png', confidence=0.7) != None:
@@ -116,7 +117,7 @@ class Dungeon():
                             self.STATE = 0
                             break
 
-                        locate_and_click('replay_dt')
+                        locate_and_click('replay_dt', conf=0.5)
 
 
                         

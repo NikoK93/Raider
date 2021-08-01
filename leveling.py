@@ -202,21 +202,39 @@ class AutoLeveler():
             go_to_stage(3)
             time.sleep(2)
 
-            # Deselect heroes if 0 runs left from previous uncompleted run
-            if self.runs_left == 0:
-                self.deselect()
+            if pyautogui.locateOnScreen('./images/energy_refill_dungeons.png', confidence=0.9) != None:
+                locate_and_click('energy_refill_dungeons', conf=0.8)
+                time.sleep(2)
+                go_to_stage(3)
+
+            elif pyautogui.locateOnScreen('./images/gem_refill_confirm.png', confidence=0.9) != None:
+                if self.energy_refill:
+                    locate_and_click('gem_refill_confirm')
+                    time.sleep(2)
+                    go_to_stage(3)
+                else:
+                    print('Aborting, no gem refills.')
+                    self.energy = False
+                    self.STATE = 0
+
+            time.sleep(2)
             
-            # Move to the far right, where heroes are level 1
-            pyautogui.moveTo(x-300, y+300)
-            for i in range(150):
-                pyautogui.scroll(1)
+            if self.STATE == 1:
+                # Deselect heroes if 0 runs left from previous uncompleted run
+                if self.runs_left == 0:
+                    self.deselect()
+                
+                # Move to the far right, where heroes are level 1
+                pyautogui.moveTo(x-300, y+300)
+                for i in range(150):
+                    pyautogui.scroll(1)
 
-            # if previous run was completed fully, add new heroes
-            if self.runs_left == 0:
-                self.add_leveling_heroes()
+                # if previous run was completed fully, add new heroes
+                if self.runs_left == 0:
+                    self.add_leveling_heroes()
 
-            # Start leveling loop
-            self.leveling_loop()
+                # Start leveling loop
+                self.leveling_loop()
 
     def repeat_leveling(self):
 
