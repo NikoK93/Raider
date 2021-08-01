@@ -170,6 +170,14 @@ class Routine():
             adjusted_click(126, 305)
             time.sleep(3)
 
+    def spraing_pit(self):
+        x, y = get_center()
+        time.sleep(2)
+        adjusted_move(400.0, 150.5)
+        time.sleep(2)
+        mouse_position = pyautogui.position()
+        pyautogui.dragTo(mouse_position[0]- 500, mouse_position[1]-500, duration=5)
+
     def market_refresh(self):
 
         go_to_base()
@@ -378,4 +386,5 @@ class Routine():
 
 
 
-    
+r = Routine()
+r.spraing_pit()

@@ -159,6 +159,23 @@ class AutoLeveler():
         cords = iter(result)
 
         return cords
+    
+    def refill(self):
+        # Check if refills
+        if pyautogui.locateOnScreen('./images/energy_refill_dungeons.png', confidence=0.9) != None:
+            locate_and_click('energy_refill_dungeons', conf=0.8)
+            time.sleep(2)
+            go_to_stage(3)
+
+        elif pyautogui.locateOnScreen('./images/gem_refill_confirm.png', confidence=0.9) != None:
+            if self.energy_refill:
+                locate_and_click('gem_refill_confirm')
+                time.sleep(2)
+                go_to_stage(3)
+            else:
+                print('Aborting, no gem refills.')
+                self.energy = False
+                self.STATE = 0
 
     def to_leveling(self):
         
@@ -202,6 +219,7 @@ class AutoLeveler():
             go_to_stage(3)
             time.sleep(2)
 
+            # Check if refills
             if pyautogui.locateOnScreen('./images/energy_refill_dungeons.png', confidence=0.9) != None:
                 locate_and_click('energy_refill_dungeons', conf=0.8)
                 time.sleep(2)
@@ -218,7 +236,7 @@ class AutoLeveler():
                     self.STATE = 0
 
             time.sleep(2)
-            
+
             if self.STATE == 1:
                 # Deselect heroes if 0 runs left from previous uncompleted run
                 if self.runs_left == 0:
@@ -242,16 +260,34 @@ class AutoLeveler():
         time.sleep(20)
         go_to_stage(3)
         time.sleep(2)
-        self.deselect()
 
-        x,y = get_center()
-        pyautogui.moveTo(x-300, y+300)
-        for i in range(150):
-            pyautogui.scroll(1)
+        # Check if refills
+        if pyautogui.locateOnScreen('./images/energy_refill_dungeons.png', confidence=0.9) != None:
+            locate_and_click('energy_refill_dungeons', conf=0.8)
+            time.sleep(2)
+            go_to_stage(3)
 
-        self.add_leveling_heroes()
+        elif pyautogui.locateOnScreen('./images/gem_refill_confirm.png', confidence=0.9) != None:
+            if self.energy_refill:
+                locate_and_click('gem_refill_confirm')
+                time.sleep(2)
+                go_to_stage(3)
+            else:
+                print('Aborting, no gem refills.')
+                self.energy = False
+                self.STATE = 0
 
-        self.leveling_loop()
+        if self.STATE == 1:
+            self.deselect()
+
+            x,y = get_center()
+            pyautogui.moveTo(x-300, y+300)
+            for i in range(150):
+                pyautogui.scroll(1)
+
+            self.add_leveling_heroes()
+
+            self.leveling_loop()
 
     def leveling_loop(self):
         
