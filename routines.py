@@ -73,6 +73,9 @@ class Routine():
         
     def mini_routine(self):
 
+        # Check sparring pit
+        go_to_base()
+        self.sparing_pit()
 
         # get mine rewards
         go_to_base()
@@ -170,13 +173,51 @@ class Routine():
             adjusted_click(126, 305)
             time.sleep(3)
 
-    def spraing_pit(self):
-        x, y = get_center()
+    def sparing_pit(self):
+
+        
+
         time.sleep(2)
         adjusted_move(400.0, 150.5)
         time.sleep(2)
         mouse_position = pyautogui.position()
         pyautogui.dragTo(mouse_position[0]- 500, mouse_position[1]-500, duration=5)
+
+        time.sleep(2)
+        adjusted_click(43, -103)
+        time.sleep(2)
+
+        # Check if heroes are ready to level up
+        if pyautogui.locateOnScreen('./images/upgrade_to.png', confidence=0.9):
+            while pyautogui.locateOnScreen('./images/upgrade_to.png', confidence=0.9):
+                locate_and_click('upgrade_to')
+                time.sleep(2)
+                # Insert new hero
+                if pyautogui.locateOnScreen('./images/max_level_sparring.png', confidence=0.9):
+                    locate_and_click('max_level_sparring', y_adj=-200, x_adj=20)
+                    time.sleep(2)
+                    locate_and_click('select_hero', y_adj=-100 ,conf=0.8)
+                    time.sleep(2)
+                    locate_and_click('confirm_sparring')
+
+        # Check for max levels and insert new hero
+        elif pyautogui.locateOnScreen('./images/max_level_sparring.png', confidence=0.9):
+            while pyautogui.locateOnScreen('./images/max_level_sparring.png', confidence=0.9):
+                locate_and_click('max_level_sparring', y_adj=-200, x_adj=20)
+                time.sleep(2)
+                locate_and_click('select_hero', y_adj=-100 ,conf=0.8)
+                time.sleep(2)
+                locate_and_click('confirm_sparring')
+        
+        # Check for empty sparring pits and insert heroes
+        elif pyautogui.locateOnScreen('./images/select_champion.png', confidence=0.9):
+            while pyautogui.locateOnScreen('./images/select_champion.png', confidence=0.9):
+                locate_and_click('select_champion', y_adj=-200, x_adj=20)
+                time.sleep(2)
+                locate_and_click('select_hero', y_adj=-100 ,conf=0.8)
+                time.sleep(2)
+                locate_and_click('confirm_sparring')
+  
 
     def market_refresh(self):
 
@@ -185,7 +226,6 @@ class Routine():
         if self.market_CD == None:
             self.market_CD = datetime.datetime.now()
             
-
         x, y = get_center()
         time.sleep(2)
         adjusted_move(400.0, 150.5)
@@ -199,25 +239,34 @@ class Routine():
         #for i in range(3)
         for i in range(5):
             try:
-                loc = pyautogui.locateOnScreen('./images/mystery_shard_market.png', confidence=0.7)
-                location = pyautogui.center(loc)
-                click_element(location[0]+200, location[1])
+                if pyautogui.locateOnScreen('./images/mystery_shard_market.png', confidence=0.9):
+                    locate_and_click('mystery_shard_market')
+                    time.sleep(1)
+                    locate_and_click('get_mystery')
+
                 time.sleep(1)
-                locate_and_click('get_mystery')
+                if pyautogui.locateOnScreen('./images/ancient_shard_market.png', confidence=0.9):
+                    locate_and_click('ancient_shard_market')
+                    time.sleep(1)
+                    locate_and_click('get_ancient')
             except Exception:
                 print("Shard not found")
 
         for i in range(10):
             pyautogui.scroll(-1)
 
-
         for i in range(5):
             try:
-                loc = pyautogui.locateOnScreen('./images/mystery_shard_market.png', confidence=0.7)
-                location = pyautogui.center(loc)
-                click_element(location[0]+200, location[1])
+                if pyautogui.locateOnScreen('./images/mystery_shard_market.png', confidence=0.9):
+                    locate_and_click('mystery_shard_market')
+                    time.sleep(1)
+                    locate_and_click('get_mystery')
+
                 time.sleep(1)
-                locate_and_click('get_mystery')
+                if pyautogui.locateOnScreen('./images/ancient_shard_market.png', confidence=0.9):
+                    locate_and_click('ancient_shard_market')
+                    time.sleep(1)
+                    locate_and_click('get_ancient')
             except Exception:
                 print("Shard not found")
 
@@ -387,4 +436,4 @@ class Routine():
 
 
 r = Routine()
-r.spraing_pit()
+r.market_refresh()

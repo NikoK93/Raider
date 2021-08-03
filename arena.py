@@ -1,23 +1,7 @@
-
-
-from numpy.lib.polynomial import _polyint_dispatcher
 from numpy.random import randint
 import pyautogui
-import cv2 as cv
-from PIL import ImageGrab
-from functools import partial
 import time
 import numpy as np
-import win32gui
-
-from clan_boss import unm_custom, nightmare_custom
-from support_functions import get_difference
-
-from windowcapture import WindowCapture
-from vision import Vision
-import pytesseract
-tes_path = pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-import timeit
 
 from support_functions import locate_and_click, get_center, go_to_base, adjusted_click, click_element
 
@@ -37,46 +21,56 @@ class Arena():
 
     def arena_fight(self):
 
+        # Check if refresh avaliable and refresh opponents
         if self.refresh == False:
             try:
-                #pyautogui.locateOnScreen('./images/tag_arena_refresh.png', confidence=0.7) != None:
                 locate_and_click('tag_arena_refresh')
                 self.refresh = True
-                # Edit, located start after refrest
-                #locate_and_click('classic_arena_start')
             except:
                 print('Refresh not avaliable')
                 
-            
-        #elif pyautogui.locateOnScreen('./images/refresh_arena_classic.png', confidence=0.7) != None:
-        #    locate_and_click('refresh_arena_classic')
-            # Edit, located start after refrest
-        #    locate_and_click('classic_arena_start')
         
         # Find the battle location and click to begin
         if pyautogui.locateOnScreen('./images/classic_arena_battle.png', confidence=0.8) != None:
             locate_and_click('classic_arena_battle')
             time.sleep(1)
-            # Refresh if possible and return False to start finding new matches
+
+            # If pop-up for token refresh appears, confirm it
             if pyautogui.locateOnScreen('./images/confirm_arena_token.png') != None:
                 locate_and_click("confirm_arena_token")
-                return False
-            # Return False and turn of STATE if gem refill has appeared
+                #return False
+
+            # Return False and set STATE to 0 if gem refill has appeared
             elif pyautogui.locateOnScreen('./images/classic_arena_refill.png') != None:
-                self.STATE = 0
-                return False
-            elif pyautogui.locateOnScreen('./images/tag_arena_gem.png') != None:
+                print('No gem refills, aborting.')
                 self.STATE = 0
                 return False
 
-            # Start the arena figh
+            elif pyautogui.locateOnScreen('./images/tag_arena_gem.png') != None:
+                print('No gem refills, aborting.')
+                self.STATE = 0
+                return False
+
+            # Start the arena fight
             else:
+                # Make sure auto is ON
+                if pyautogui.locateOnScreen('./images/start_on_auto_OFF.png') != None:
+                    locate_and_click("start_on_auto_OFF", x_adj=-100, conf=0.9)
+
+                # Click start
                 locate_and_click('classic_arena_start')
+
+                # Time the battle 
                 start = time.time()
+
                 while self.STATE == 1:
+                    
+                    # Every two seconds
                     time.sleep(2)
+                    
+                    # Check for defeat
                     if pyautogui.locateOnScreen('./images/defeat_arena.png') != None:
-                        print('Lost game, regresing list')
+                        print('Lost game.')
                         pyautogui.press('esc')
                         time.sleep(2)
                         if self.arena_type != 'classic':
@@ -91,7 +85,8 @@ class Arena():
                         else:
                             self.STATE = 0
                             break
-                        
+
+                    # Check for victory
                     elif pyautogui.locateOnScreen('./images/victory_arena.png') != None:
                         pyautogui.press('esc')
                         time.sleep(3)
@@ -99,20 +94,36 @@ class Arena():
                                 pyautogui.press('esc')
                                 time.sleep(1)
                         break
-                        #
-                    # Need to create a blacklist system for lost matches. 
 
+                    # Check wether game is going on for too long
                     else:
+                        # Failsafe for potential infinite games i.e. apothecary
                         end = time.time()
                         time_elapsed = end - start
-                        if time_elapsed > 500:
-                            pyautogui.press('esc')
-                            self.STATE = 0
-                            return False
-                        print('Waiting',(time_elapsed))
-                        #print('game finished')
+                        if time_elapsed > 1000:
+                            if self.arena_type == "tag_arena":
+                                time.sleep(2)
+                                locate_and_click('skip_battle')
+                                time.sleep(2)
+                                locate_and_click('skip_battle_2')
+                                
+                                #self.STATE = 0
+                                #return False
+                            else:
+                                pyautogui.press('esc')
+                                time.sleep(2)
+                                locate_and_click('leave_battle')
+                                time.sleep(2)
+                                locate_and_click('leave_battle_2')
+                                time.sleep(2)
+                                pyautogui.press('esc')
+                                self.STATE = 0
+                                return False
+
+                        print(f'Waiting - {round(time_elapsed, 0)} seconds.')
+    
                         
-                    
+        # if arena battle button is not found, return False to scroll down    
         else:
             return False
 
@@ -125,26 +136,29 @@ class Arena():
                 mouse_position = pyautogui.position()
 
                 pyautogui.dragTo(mouse_position[0], mouse_position[1] - 200, duration=2)
-                
-                #ran_int, y = self.get_scroll_parameters()
-                #print(randint, y)
-                #for i in range(randint):
-                #  pyautogui.scroll(y)
 
-        print('arena done')
+        print('Arena done')
 
     def go_to_arena(self):
-
-        #locate_and_click('rsl')
+        
+        # Battle location
         locate_and_click('battle', 0.6)
+
+        # Arena location
         locate_and_click('arena')
+
+        # Choose arena
         if self.arena_type == 'classic':
             locate_and_click('classic_arena')
         else:
             locate_and_click('tag_arena')
 
+        # set bot to active
         self.STATE = 1
+
+        # Begin main loop
         self.roam_and_fight()
+
 
     def get_scroll_parameters(self):
         

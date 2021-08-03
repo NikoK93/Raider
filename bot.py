@@ -24,34 +24,59 @@ GAME_RESOLUTION = (1280, 720)
 
 class Raider():
 
-    def __init__(self, account, dungeon, gem_refill=False, action=None, star_leveling=2,  dt_difficulty='normal'):
+    def __init__(self, account, dungeon=None, leveling=False, gem_refill=False, action=None, star_leveling=2,  dt_difficulty='normal'):
 
         # Get center and open raid
         self.CENTER_POSITION = open_raid()
 
         # Some default actions
-        self.actions = ['arena','leveling', dungeon, 'tag_arena','FW','doom_tower','mini_routine']
+        self.actions = ['arena', 'tag_arena','FW','doom_tower','mini_routine']
+        # Action which will not be appended and reapeated
         self.daily_action = ['UNM', 'NM', 'routine', 'routine_market_refresh']
 
+        # Avaliable dungeons
         self.dungeons = ['force', 'spirit', 'magic', 'void', 'arcane', 'dragon', 'spider', 'ice_golem', 'fire_knight', 'minotaur'] 
+        self.dungeons_subset = ['dragon', 'spider', 'ice_golem', 'fire_knight'] 
 
+        # User defined single action
         self.user_action = action
+
         # account information 
         self.account = account
-        #temperature = dict.fromkeys(self.actions, 1)
+        
         # Gem refill bool
         self.gem_refill = gem_refill
+
+        # DoomTower difficulty
         self.dt_difficulty = dt_difficulty
+
+        # Minimum star for leveling
         self.star_leveling = star_leveling
 
+        # Leveling bool
+        self.leveling = leveling
 
+        # Choosing energy spender, and inserting it into actions stack
+        if self.leveling:
+            self.actions.insert(0,'leveling')
+        else:
+            # if dungeon is defined, append to list. Else insert a random dungeon
+            if dungeon:
+                self.actions.insert(0, dungeon)
+            else:
+                self.actions.insert(0, np.random.choice(self.dungeons_subset))
+            
+        # Bot status
         self.IDLE = 1
+
+        # Market refresh status
         self.market_refresh = None
 
         # Once per day activites 
         self.cb_UMM = 0
         self.cb_MM = 0
         self.routine = 0
+
         # Saved leveling runs left 
         self.leveling_runs = 0
 
@@ -188,7 +213,7 @@ class Raider():
                 #set idle 
                 self.IDLE = 0
 
-                arena = Arena('tag')
+                arena = Arena('tag_arena')
                 arena.go_to_arena()
 
                 time.sleep(1)
@@ -253,7 +278,7 @@ class Raider():
                 self.IDLE = 1
                
 
-raid = Raider(account='raid3', action='leveling', dungeon='minotaur',  dt_difficulty='hard', gem_refill=True)
+raid = Raider(account='raid3', action='arena', dt_difficulty='hard', gem_refill=True)
 
 while True:
     
