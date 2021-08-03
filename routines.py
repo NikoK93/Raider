@@ -435,5 +435,5 @@ class Routine():
 
 
 
-r = Routine()
-r.market_refresh()
+#r = Routine()
+#r.market_refresh()

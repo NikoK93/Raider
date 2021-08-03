@@ -59,8 +59,8 @@ class AutoLeveler():
         self.STATE = 1
 
         # Set state to 0 if no xp boost is active
-        #if self.xp_boost_status() == False:
-        #    self.STATE = 0
+        if self.xp_boost_status() == False:
+            self.STATE = 0
 
     def xp_boost_status(self):
 
