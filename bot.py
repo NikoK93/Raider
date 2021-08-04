@@ -24,7 +24,7 @@ GAME_RESOLUTION = (1280, 720)
 
 class Raider():
 
-    def __init__(self, account, dungeon=None, leveling=False, gem_refill=False, action=None, star_leveling=2,  dt_difficulty='normal'):
+    def __init__(self, account, dungeon=None, leveling=False, gem_refill=False, action=None, action_one_time=False, star_leveling=2,  dt_difficulty='normal'):
 
         # Get center and open raid
         self.CENTER_POSITION = open_raid()
@@ -56,7 +56,7 @@ class Raider():
         # Leveling bool
         self.leveling = leveling
 
-        # Choosing energy spender, and inserting it into actions stack
+        # Choosing energy spender, and inserting it into actions stack at index 0
         if self.leveling:
             self.actions.insert(0,'leveling')
         else:
@@ -127,7 +127,7 @@ class Raider():
                 # Write to database
                 self.database.update_value('UNM')
             
-        elif isNowInTimePeriod(dt.time(18,30), dt.time(23,30), dt.datetime.now().time()) and self.cb_MM == 0:
+        elif isNowInTimePeriod(dt.time(13,30), dt.time(23,30), dt.datetime.now().time()) and self.cb_MM == 0:
              # Insert NM as priority 1
             if 'NM' not in self.actions:
                 self.actions.insert(0,'NM')
@@ -278,7 +278,7 @@ class Raider():
                 self.IDLE = 1
                
 
-raid = Raider(account='raid3', action='arena', dt_difficulty='hard', gem_refill=True)
+raid = Raider(account='raid3', leveling=True, dt_difficulty='hard', gem_refill=False, star_leveling=2)
 
 while True:
     

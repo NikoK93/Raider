@@ -1,8 +1,9 @@
 import time
 import pyautogui
 
-from custom_CB import unm_custom, nightmare_custom, unm_custom_raid2, nm_custom_raid2
+from custom_CB import unm_custom, unm_custom_raid2, nm_custom_raid2
 from support_functions import locate_and_click, get_center, go_to_base, adjusted_click, click_element
+from cb_test import nightmare_custom
 
 
 

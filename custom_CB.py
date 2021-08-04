@@ -243,7 +243,6 @@ def nightmare_custom():
 
     #Round 1
     #Roschard
-    locate_and_click('rsl')
     adjusted_click(35, -26)
     time.sleep(5)
 

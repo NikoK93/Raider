@@ -156,7 +156,7 @@ class Dungeon():
             'dark_elves': 13,
             'sacred_order':12,
             'banner_lords':14,
-            'barbarians': 20,
+            'barbarians': 21,
             'dwarfs': 5,
             'knight_revenant':15,
             'lizardmen':11,
@@ -164,7 +164,7 @@ class Dungeon():
             'undead_horde':20,
             'demonspawn': 15,
             'ogryn_tribe':11,
-            'orc':6,
+            'orc':5,
             'high_elves': 21
         }      
 

@@ -410,6 +410,9 @@ class AutoLeveler():
 
             except:
                 print('No Hero selected')
+                if pyautogui.locateOnScreen('./images/hero_select_test.png', confidence=0.8) != None:
+                    pyautogui.press('esc')
+                    time.sleep(2)
             
         
 

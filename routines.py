@@ -1,4 +1,4 @@
-from main import go_to_tavern
+
 from numpy.lib.polynomial import _polyint_dispatcher
 from numpy.random import randint
 import pyautogui
@@ -26,6 +26,9 @@ class Routine():
         # get daily login rewards
         go_to_base()
         self.login_rewards()
+
+        go_to_base()
+        self.sparing_pit()
 
         # get mine rewards
         go_to_base()
@@ -70,6 +73,8 @@ class Routine():
         # Collect arena champion
         go_to_base()
         self.arena_shop()
+
+        
         
     def mini_routine(self):
 
