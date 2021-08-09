@@ -158,11 +158,11 @@ class Dungeon():
             'banner_lords':14,
             'barbarians': 21,
             'dwarfs': 5,
-            'knight_revenant':15,
+            'knight_revenant':17,
             'lizardmen':11,
             'skinwalkers':9,
             'undead_horde':20,
-            'demonspawn': 15,
+            'demonspawn': 18,
             'ogryn_tribe':11,
             'orc':5,
             'high_elves': 21

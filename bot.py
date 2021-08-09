@@ -30,7 +30,7 @@ class Raider():
         self.CENTER_POSITION = open_raid()
 
         # Some default actions
-        self.actions = ['arena', 'tag_arena','FW','doom_tower','mini_routine']
+        self.actions = ['arena', 'tag_arena', 'FW', 'doom_tower','mini_routine']
         # Action which will not be appended and reapeated
         self.daily_action = ['UNM', 'NM', 'routine', 'routine_market_refresh']
 
@@ -62,7 +62,8 @@ class Raider():
         else:
             # if dungeon is defined, append to list. Else insert a random dungeon
             if dungeon:
-                self.actions.insert(0, dungeon)
+                #self.actions.insert(0, dungeon)
+                self.actions.append(dungeon)
             else:
                 self.actions.insert(0, np.random.choice(self.dungeons_subset))
             
@@ -127,7 +128,7 @@ class Raider():
                 # Write to database
                 self.database.update_value('UNM')
             
-        elif isNowInTimePeriod(dt.time(13,30), dt.time(23,30), dt.datetime.now().time()) and self.cb_MM == 0:
+        elif isNowInTimePeriod(dt.time(19,30), dt.time(23,30), dt.datetime.now().time()) and self.cb_MM == 0:
              # Insert NM as priority 1
             if 'NM' not in self.actions:
                 self.actions.insert(0,'NM')
@@ -278,7 +279,7 @@ class Raider():
                 self.IDLE = 1
                
 
-raid = Raider(account='raid3', leveling=True, dt_difficulty='hard', gem_refill=False, star_leveling=2)
+raid = Raider(account='raid3', leveling=False, action='fire_knight', dungeon='fire_knight', dt_difficulty='hard', gem_refill=False, star_leveling=2)
 
 while True:
     

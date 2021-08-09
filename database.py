@@ -178,7 +178,7 @@ class DataBaseManager():
 #d.update_leveling_value(0)
 #d.create_table()
 #d.initialize()
-#d.update_value('routine', 0)
+#d.update_value('UNM', 0)
 #d.insert_datum()
 
 #d.select_data()

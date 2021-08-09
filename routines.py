@@ -27,8 +27,8 @@ class Routine():
         go_to_base()
         self.login_rewards()
 
-        go_to_base()
-        self.sparing_pit()
+        #go_to_base()
+        #self.sparing_pit()
 
         # get mine rewards
         go_to_base()
@@ -71,16 +71,16 @@ class Routine():
         self.daily_quests_collect()
 
         # Collect arena champion
-        go_to_base()
-        self.arena_shop()
+        #go_to_base()
+        #self.arena_shop()
 
         
         
     def mini_routine(self):
 
         # Check sparring pit
-        go_to_base()
-        self.sparing_pit()
+        #go_to_base()
+        #self.sparing_pit()
 
         # get mine rewards
         go_to_base()
@@ -99,8 +99,8 @@ class Routine():
         self.daily_quests_collect()
 
         # Collect arena champion
-        go_to_base()
-        self.arena_shop()
+        #go_to_base()
+        #self.arena_shop()
 
     def login_rewards(self):
 
