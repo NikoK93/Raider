@@ -1,7 +1,7 @@
 import time
 import pyautogui
 
-from custom_CB import unm_custom, unm_custom_raid2, nm_custom_raid2, unm_new_account
+from custom_CB import unm_custom, unm_custom_raid2, nm_custom_raid2, unm_new_account, nm_new_account
 from support_functions import locate_and_click, get_center, go_to_base, adjusted_click, click_element
 from cb_test import nightmare_custom
 
@@ -64,19 +64,21 @@ class ClanBoss():
             locate_and_click('NM', conf=0.9)  
             locate_and_click('clan_boss_battle', conf=0.9)
             locate_and_click("start_on_auto_ON", x_adj=-100, conf=0.9)
-            locate_and_click('team_setup', conf=0.9)
+            #locate_and_click('team_setup', conf=0.9)
 
-            if self.account == 'raid3':
-                locate_and_click('team_NM', conf=0.9, x_adj=-250)
-            elif self.account == 'raid2':
-                locate_and_click('team_NM_raid2', conf=0.9, x_adj=-250)
+            #if self.account == 'raid3':
+            #    locate_and_click('team_NM', conf=0.9, x_adj=-250)
+            #elif self.account == 'raid2':
+            #    locate_and_click('team_NM_raid2', conf=0.9, x_adj=-250)
 
-            pyautogui.press('esc')
-            locate_and_click("start_on_auto_ON", x_adj=-100, conf=0.9)
+            #pyautogui.press('esc')
+            #locate_and_click("start_on_auto_ON", x_adj=-100, conf=0.9)
             locate_and_click('clan_boss_start', conf=0.9)
-
+            nm_new_account()
+            
+            '''
             if self.account == 'raid3':
-                nightmare_custom()
+                nm_new_account()
             elif self.account == 'raid2':
                 nm_custom_raid2()
-            
+            '''

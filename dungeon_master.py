@@ -33,7 +33,7 @@ class Dungeon():
         self.potions_keeps = ['force', 'spirit', 'magic', 'void', 'arcane']
         self.dungeons = {'dragon':25,
                         'spider':20,
-                        'ice_golem':20,
+                        'ice_golem':24,
                         'fire_knight':20,
                         'minotaur':15}
 
@@ -153,17 +153,17 @@ class Dungeon():
         }
 
         faction_wars_stages = {
-            'dark_elves': 13,
+            'dark_elves': 17,
             'sacred_order':12,
             'banner_lords':14,
             'barbarians': 21,
-            'dwarfs': 5,
+            'dwarfs': 12,
             'knight_revenant':17,
-            'lizardmen':11,
-            'skinwalkers':9,
+            'lizardmen':21,
+            'skinwalkers':18,
             'undead_horde':20,
             'demonspawn': 18,
-            'ogryn_tribe':11,
+            'ogryn_tribe':17,
             'orc':5,
             'high_elves': 21
         }      
@@ -325,6 +325,7 @@ class Dungeon():
                     # If runs more than defined runs, quit 
                     if self.runs != None:
                         if self.game_runs >= self.runs:
+                            print(f"{self.game_runs - self.runs} runs left")
                             self.STATE = 0
                             break
 

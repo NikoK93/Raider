@@ -157,7 +157,7 @@ def unm_new_account():
 
 def nm_new_account():
 
-    time.sleep(10)
+    time.sleep(15)
 
     # Turn 0
     # Fast Maneater 
@@ -168,13 +168,140 @@ def nm_new_account():
     # Slow Maneater 
     pyautogui.press('w') 
     adjusted_click(35, -26)
+    time.sleep(10)
+
+    # Fayne 
+    pyautogui.press('e') 
+    adjusted_click(35, -26)
     time.sleep(5)
 
+    # krela 
+    pyautogui.press('e') 
+    adjusted_click(35, -26)
+    time.sleep(10)
+
     # Turn 1
-    # Slow Maneater 
+
+    # septimus 
     pyautogui.press('w') 
     adjusted_click(35, -26)
     time.sleep(5)
+
+    # Fast Maneater 
+    pyautogui.press('e') 
+    adjusted_click(-108, 269)
+    time.sleep(5)
+
+    # Slow Maneater 
+    adjusted_click(35, -26)
+    time.sleep(10)
+
+    # fayne 
+    pyautogui.press('w') 
+    adjusted_click(35, -26)
+    time.sleep(5)
+
+    # krela 
+    pyautogui.press('w') 
+    adjusted_click(35, -26)
+    time.sleep(20)
+
+    #Turn 2
+    # maneater 
+    adjusted_click(35, -26)
+    time.sleep(5)
+
+    # sepimus 
+    adjusted_click(35, -26)
+    time.sleep(5)
+
+    # maneater 
+    adjusted_click(35, -26)
+    time.sleep(5)
+
+    # fayne
+    adjusted_click(35, -26)
+    time.sleep(5)
+
+    # krela
+    adjusted_click(35, -26)
+    time.sleep(10)
+
+    # turn 3
+    # target stun????
+    #maneater
+    adjusted_click(35, -26)
+    time.sleep(5)
+
+    #septimus
+    adjusted_click(35, -26)
+    time.sleep(5)
+
+    #krela
+    adjusted_click(35, -26)
+    time.sleep(5)
+
+    #krela
+    adjusted_click(35, -26)
+    time.sleep(5)
+
+    #krela
+    adjusted_click(35, -26)
+    time.sleep(5)
+
+    # maneater
+    pyautogui.press('e') 
+    adjusted_click(-108, 269)
+    time.sleep(10)
+
+    #turn 4
+    #septimus
+    adjusted_click(35, -26)
+    time.sleep(5)
+
+    #maneater
+    adjusted_click(35, -26)
+    time.sleep(5)
+
+    #fayne
+    adjusted_click(35, -26)
+    time.sleep(5)
+
+    #maneater
+    adjusted_click(35, -26)
+    time.sleep(5)
+
+    #krela
+    adjusted_click(35, -26)
+    time.sleep(10)
+
+    # turn 5
+    #septimus
+    adjusted_click(35, -26)
+    time.sleep(5)
+
+    #maneater
+    adjusted_click(35, -26)
+    time.sleep(5)
+
+    #maneater
+    adjusted_click(35, -26)
+    time.sleep(5)
+
+    #fayne
+    adjusted_click(35, -26)
+    time.sleep(5)
+
+    #krela
+    adjusted_click(35, -26)
+    time.sleep(5)
+
+    pyautogui.press('e') 
+    adjusted_click(-108, 269)
+    time.sleep(10)
+
+    #turn 6
+    locate_and_click('auto', conf=0.8)
 
 
 def unm_custom_raid2():

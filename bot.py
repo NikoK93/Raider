@@ -2,6 +2,8 @@ import time
 import numpy as np
 import datetime as dt
 
+from pyautogui import run
+
 from leveling import AutoLeveler
 from clan_boss import ClanBoss
 from clan_boss import unm_custom, nightmare_custom
@@ -24,13 +26,14 @@ GAME_RESOLUTION = (1280, 720)
 
 class Raider():
 
-    def __init__(self, account, dungeon=None, leveling=False, gem_refill=False, action=None, action_one_time=False, star_leveling=2,  dt_difficulty='normal'):
+    def __init__(self, account, dungeon=None, leveling=False, dungeon_runs=None, gem_refill=False, action=None, action_one_time=False, star_leveling=2,  dt_difficulty='normal'):
 
         # Get center and open raid
         self.CENTER_POSITION = open_raid()
 
         # Some default actions
         self.actions = ['arena', 'tag_arena', 'FW', 'doom_tower','mini_routine']
+        #self.actions = ['arena']
         # Action which will not be appended and reapeated
         self.daily_action = ['UNM', 'NM', 'routine', 'routine_market_refresh']
 
@@ -44,6 +47,12 @@ class Raider():
         # account information 
         self.account = account
         
+        # Single runs through action
+        self.action_one_time = action_one_time
+
+        # Dungeon runs
+        self.runs = dungeon_runs
+
         # Gem refill bool
         self.gem_refill = gem_refill
 
@@ -58,7 +67,8 @@ class Raider():
 
         # Choosing energy spender, and inserting it into actions stack at index 0
         if self.leveling:
-            self.actions.insert(0,'leveling')
+            #self.actions.insert(0,'leveling')
+            self.actions.append('leveling')
         else:
             # if dungeon is defined, append to list. Else insert a random dungeon
             if dungeon:
@@ -146,7 +156,9 @@ class Raider():
         # Moving selected action to the bottom of the priority queue
         # Do not append actions which occour only once per day
         if action not in self.daily_action:
-            self.actions.append(action)
+            # Do not append if action will be taken only once
+            if self.action_one_time == False:
+                self.actions.append(action)
         
         print(self.actions)
 
@@ -169,7 +181,7 @@ class Raider():
 
                 self.IDLE = 0
 
-                dungeon = Dungeon(action, refill=self.gem_refill)
+                dungeon = Dungeon(action, runs=self.runs, refill=self.gem_refill)
                 dungeon.go_to_dungeon()
 
                 time.sleep(1)
@@ -279,11 +291,17 @@ class Raider():
                 self.IDLE = 1
                
 
-raid = Raider(account='raid3', leveling=False, action='fire_knight', dungeon='fire_knight', dt_difficulty='hard', gem_refill=False, star_leveling=2)
+raid = Raider(account='raid3', leveling=True, dungeon='ice_golem', dt_difficulty='hard', action_one_time=False, gem_refill=False, star_leveling=3)
 
 while True:
-    
+
+    if len(raid.actions) == 0:
+        print('No actions left, quiting')
+        break
+
     raid.main_loop()
     time.sleep(30)
     print("trying action...")
+
+
 

@@ -244,7 +244,7 @@ class AutoLeveler():
                 
                 # Move to the far right, where heroes are level 1
                 pyautogui.moveTo(x-300, y+300)
-                for i in range(150):
+                for i in range(300):
                     pyautogui.scroll(1)
 
                 # if previous run was completed fully, add new heroes
@@ -282,7 +282,7 @@ class AutoLeveler():
 
             x,y = get_center()
             pyautogui.moveTo(x-300, y+300)
-            for i in range(150):
+            for i in range(300):
                 pyautogui.scroll(1)
 
             self.add_leveling_heroes()
