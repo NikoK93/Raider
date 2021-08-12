@@ -31,7 +31,7 @@ class Dungeon():
         self.dt_difficulty = dt_difficulty
 
         self.potions_keeps = ['force', 'spirit', 'magic', 'void', 'arcane']
-        self.dungeons = {'dragon':25,
+        self.dungeons = {'dragon':20,
                         'spider':20,
                         'ice_golem':24,
                         'fire_knight':20,
@@ -164,7 +164,7 @@ class Dungeon():
             'undead_horde':20,
             'demonspawn': 18,
             'ogryn_tribe':17,
-            'orc':5,
+            'orc':17,
             'high_elves': 21
         }      
 

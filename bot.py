@@ -26,7 +26,7 @@ GAME_RESOLUTION = (1280, 720)
 
 class Raider():
 
-    def __init__(self, account, dungeon=None, leveling=False, dungeon_runs=None, gem_refill=False, action=None, action_one_time=False, star_leveling=2,  dt_difficulty='normal'):
+    def __init__(self, account, dungeon=None, energy_spender_last=False, leveling=False, dungeon_runs=None, gem_refill=False, action=None, action_one_time=False, star_leveling=2,  dt_difficulty='normal'):
 
         # Get center and open raid
         self.CENTER_POSITION = open_raid()
@@ -50,6 +50,9 @@ class Raider():
         # Single runs through action
         self.action_one_time = action_one_time
 
+        # If energy_spender_last == True, dungeon or leveling action will be taken after other actions
+        self.energy_spender_last = energy_spender_last
+
         # Dungeon runs
         self.runs = dungeon_runs
 
@@ -67,15 +70,22 @@ class Raider():
 
         # Choosing energy spender, and inserting it into actions stack at index 0
         if self.leveling:
-            #self.actions.insert(0,'leveling')
-            self.actions.append('leveling')
+            if energy_spender_last:
+                self.actions.append('leveling')
+            else:
+                self.actions.insert(0,'leveling')
         else:
             # if dungeon is defined, append to list. Else insert a random dungeon
             if dungeon:
-                #self.actions.insert(0, dungeon)
-                self.actions.append(dungeon)
+                if energy_spender_last:
+                    self.actions.append(dungeon)
+                else:
+                    self.actions.insert(0, dungeon)
             else:
-                self.actions.insert(0, np.random.choice(self.dungeons_subset))
+                if energy_spender_last:
+                    self.actions.append(np.random.choice(self.dungeons_subset))
+                else:
+                    self.actions.insert(0, np.random.choice(self.dungeons_subset))
             
         # Bot status
         self.IDLE = 1
@@ -291,7 +301,7 @@ class Raider():
                 self.IDLE = 1
                
 
-raid = Raider(account='raid3', leveling=True, dungeon='ice_golem', dt_difficulty='hard', action_one_time=False, gem_refill=False, star_leveling=3)
+raid = Raider(account='raid3', leveling=True, dungeon='dragon', dt_difficulty='hard', action_one_time=False, gem_refill=False, star_leveling=2)
 
 while True:
 
