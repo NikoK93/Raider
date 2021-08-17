@@ -20,7 +20,9 @@ import database
 
 class AutoLeveler():
 
-    def __init__(self, refill, runs_left=0, minimum_star=2):
+    def __init__(self, refill, dragon_leveling=False, runs_left=0, minimum_star=2):
+
+        # dragon 20 xp 5700
 
         # Difficulty
         self.difficulty = 'brutal'
@@ -43,6 +45,15 @@ class AutoLeveler():
             3:24,
             4:52
         }
+
+        # Number of runs for dragon leveling
+        self.dragon_leveling_table = {
+            1:4,
+            2:14,
+            3:35,
+            4:79
+        }
+
         # Bool - if energy avaliable
         self.energy = True
         
@@ -68,7 +79,7 @@ class AutoLeveler():
 
         adjusted_click(505.0, 310.5)
         time.sleep(2)
-        if pyautogui.locateOnScreen('./images/xp_boost_on.png') != None:
+        if pyautogui.locateOnScreen('./images/xp_boost_on.png', confidence=0.9) != None:
             print('XP buff on')
             return True
         else:
@@ -177,6 +188,65 @@ class AutoLeveler():
                 self.energy = False
                 self.STATE = 0
 
+
+    def to_dragon(self, stage):
+        
+        # Returning to base
+        go_to_base()
+
+        # Clicking battle location
+        adjusted_click(505.0, 310.5)
+
+        # Clicking dungeons
+        locate_and_click('dungeons', 0.7)
+
+        # Go to dungeona and enter
+        x,y = get_center()
+        pyautogui.moveTo(x+600, y)
+        mouse_position = pyautogui.position()
+        pyautogui.dragTo(mouse_position[0]- 1200, mouse_position[1], duration=5)
+        time.sleep(2)
+        locate_and_click('dragon', 0.5)
+
+        # Go to designated stage, and click start
+        go_to_stage(stage)
+
+        time.sleep(2)
+        # Check if energy is avaliable and enter the game
+        if pyautogui.locateOnScreen('./images/energy_refill_dungeons.png', confidence=0.9) != None:
+                locate_and_click('energy_refill_dungeons', conf=0.8)
+                time.sleep(2)
+                adjusted_click(483.0, 281.5)
+
+        # Check for gem refill, and enter if gem refill is true
+        elif pyautogui.locateOnScreen('./images/gem_refill_confirm.png', confidence=0.9) != None:
+            if self.energy_refill:
+                locate_and_click('gem_refill_confirm')
+                time.sleep(2)
+                adjusted_click(483.0, 281.5)
+            else:
+                print('Aborting, no gem refills.')
+                self.energy = False
+                self.STATE = 0
+        
+        time.sleep(2)
+
+        if self.STATE == 1:
+            # Deselect heroes if 0 runs left from previous uncompleted run
+            if self.runs_left == 0:
+                self.deselect_four()
+            
+            # Move to the far right, where heroes are level 1
+            pyautogui.moveTo(x-300, y+300)
+            for i in range(300):
+                pyautogui.scroll(1)
+
+            # if previous run was completed fully, add new heroes
+            if self.runs_left == 0:
+                self.add_leveling_heroes()
+
+
+                
     def to_leveling(self):
         
         if self.STATE == 1:
@@ -299,6 +369,13 @@ class AutoLeveler():
 
         locate_and_click('start_leveling', conf=0.7)
 
+        time.sleep(2)
+
+        if pyautogui.locateOnScreen('./images/no_aura.png', confidence=0.8) != None:
+            locate_and_click('no_aura', conf = 0.8)
+            time.sleep(2)
+            locate_and_click('start_leveling', conf=0.7)
+
         if self.STATE == 1:
             while self.STATE == 1:
                 # Every 2 seconds check if game is done
@@ -349,6 +426,14 @@ class AutoLeveler():
                 self.repeat_leveling()
 
     def deselect(self):
+
+        adjusted_click(-339.0, 20.5)
+        time.sleep(1)
+        adjusted_click(-458, -91)
+        time.sleep(1)
+        adjusted_click(-343, -179)
+
+    def deselect_four(self):
 
         adjusted_click(-339.0, 20.5)
         time.sleep(1)

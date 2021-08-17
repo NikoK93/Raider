@@ -11,150 +11,91 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 import time
-import main
 import logging
+import bot
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+import sys
+from signal import signal, SIGINT
+from sys import exit
 
-class Worker(QObject):
-    finished = pyqtSignal()
-    progress = pyqtSignal(int)
 
-    def arena(self):
-        """Long-running task."""
-        main.go_to_arena()
+class MainWidget(QWidget):
+    def __init__(self, parent =None):
+        super(MainWidget, self).__init__(parent)
+        self.setWindowTitle("QThread Example")
 
-    def routine(self):
-        """Long-running task."""
-        main.routine()
+        self.thread = Worker()
 
-    def clan_boss_nighmare(self):
-        main.to_clan_boss('NM')
+        self.listFile = QListWidget()
+        self.btnStart = QPushButton("start")
+        self.btnStop = QPushButton("stop")
+
+        layout = QGridLayout(self)
+        layout.addWidget(self.listFile)
+        layout.addWidget(self.btnStart)
+        layout.addWidget(self.btnStop)
+        #layout.addWidget(self.btnStop,1,3)
+
+        self.btnStart.clicked.connect(self.slotStart)
+        self.btnStop.clicked.connect(self.slotStop)
+        #self.thread.sinout.connect(self.slotAdd)
+
+        self.btnStop.setEnabled(False)
+
+    def slotStart(self):
+        self.btnStart.setEnabled(False)
+        #self.thread.start()
+        self.startExecuting()
+        self.btnStop.setEnabled(True)
+
+    def slotStop(self):
+        self.btnStop.setEnabled(False)
+        self.stopExecuting()
+        self.btnStart.setEnabled(True)
+
+    def slotAdd(self,file_inf):
+        self.listFile.addItem(file_inf)
+
+    def startExecuting(self):
+        self.process = QProcess()
+        self.process.setProcessChannelMode(QProcess.MergedChannels)
+        self.process.start("python", ["-u", 'bot.py'])
+
+    def stopExecuting(self):
+        self.process.kill()
+
+class Worker(QThread):
+    sinout=  pyqtSignal(str)
+    def __init__(self, parent = None):
+        super(Worker,self).__init__(parent)
+        self.working = True
+        self.num = 0
+
+
+    def __del__(self):
+        self.working = False
+        self.wait()
 
     def stop(self):
-        quit()
+        self.working = False
+        self.wait()
 
-class QPlainTextEditLogger(logging.Handler):
-    def __init__(self, parent):
-        super(QPlainTextEditLogger, self).__init__()
+    def run(self):
 
-        self.widget = QtWidgets.QPlainTextEdit(parent)
-        self.widget.setGeometry(QtCore.QRect(490, 110, 441, 381))
-        self.widget.setReadOnly(True)
+        self.raid = bot.Raider(account='raid3', leveling=True, dungeon='spider', dt_difficulty='hard', action_one_time=False, gem_refill=False, star_leveling=3)
+        if self.working == True:
+            file_str = f"trying action...{self.raid.actions}"
+            self.sinout.emit(file_str)
+            self.raid.main_loop()
+            # Transmitting signal
+            
+            # Thread hibernates for 2 seconds
+            self.sleep(30)
 
-    def emit(self, record):
-        msg = self.format(record)
-        self.widget.appendPlainText(msg)
-
-    def write(self, m):
-        pass
-
-class Ui_Dialog(object):
-
-    def setupUi(self, Dialog):
-        Dialog.setObjectName("Dialog")
-        Dialog.resize(1010, 566)
-        self.verticalLayoutWidget = QtWidgets.QWidget(Dialog)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(30, 80, 181, 361))
-        self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
-        self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout.setObjectName("verticalLayout")
-        self.pushButton_7 = QtWidgets.QPushButton(self.verticalLayoutWidget)
-        self.pushButton_7.setObjectName("pushButton_7")
-        self.pushButton_7.clicked.connect(self.runLongTask)
-        self.verticalLayout.addWidget(self.pushButton_7)
-
-        self.pushButton_6 = QtWidgets.QPushButton(self.verticalLayoutWidget)
-        self.pushButton_6.setObjectName("pushButton_6")
-        self.pushButton_6.clicked.connect(main.play_time_rewards)
-        self.verticalLayout.addWidget(self.pushButton_6)
-
-        self.pushButton_5 = QtWidgets.QPushButton(self.verticalLayoutWidget)
-        self.pushButton_5.setObjectName("pushButton_5")
-        self.pushButton_5.clicked.connect(self.runLongTask)
-        self.verticalLayout.addWidget(self.pushButton_5)
-
-        self.pushButton_2 = QtWidgets.QPushButton(self.verticalLayoutWidget)
-        self.pushButton_2.setObjectName("pushButton_2")
-        self.pushButton_2.clicked.connect(self.stop_thread)
-
-        self.verticalLayout.addWidget(self.pushButton_2)
-        self.pushButton_4 = QtWidgets.QPushButton(self.verticalLayoutWidget)
-        self.pushButton_4.setObjectName("pushButton_4")
-        self.verticalLayout.addWidget(self.pushButton_4)
-        self.pushButton_3 = QtWidgets.QPushButton(self.verticalLayoutWidget)
-        self.pushButton_3.setObjectName("pushButton_3")
-        self.verticalLayout.addWidget(self.pushButton_3)
-        self.pushButton = QtWidgets.QPushButton(self.verticalLayoutWidget)
-        self.pushButton.setObjectName("pushButton")
-        self.verticalLayout.addWidget(self.pushButton)
-        self.Roam = QtWidgets.QPushButton(Dialog)
-        self.Roam.setGeometry(QtCore.QRect(50, 490, 141, 41))
-        self.Roam.setObjectName("Roam")
-        self.textEdit = QtWidgets.QTextEdit(Dialog)
-        self.textEdit.setGeometry(QtCore.QRect(230, 80, 141, 31))
-        self.textEdit.setObjectName("textEdit")
-
-        # Log display
-        self.log_handler = QPlainTextEditLogger(Dialog)
-        logging.getLogger().addHandler(self.log_handler)
-
-        self.retranslateUi(Dialog)
-        QtCore.QMetaObject.connectSlotsByName(Dialog)
-
-
-    def retranslateUi(self, Dialog):
-        _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        self.pushButton_7.setText(_translate("Dialog", "Classic Arena"))
-        self.pushButton_6.setText(_translate("Dialog", "PushButton"))
-        self.pushButton_5.setText(_translate("Dialog", "PushButton"))
-        self.pushButton_2.setText(_translate("Dialog", "PushButton"))
-        self.pushButton_4.setText(_translate("Dialog", "PushButton"))
-        self.pushButton_3.setText(_translate("Dialog", "PushButton"))
-        self.pushButton.setText(_translate("Dialog", "PushButton"))
-        self.Roam.setText(_translate("Dialog", "PushButton"))
-
-    def reportProgress(self, n):
-        self.stepLabel.setText(f"Long-Running Step: {n}")
-
-    def runLongTask(self, type):
-        # Step 2: Create a QThread object
-        self.thread = QThread()
-        # Step 3: Create a worker object
-        self.worker = Worker()
-        # Step 4: Move worker to the thread
-        self.worker.moveToThread(self.thread)
-        # Step 5: Connect signals and slots
- 
-        self.thread.started.connect(self.worker.arena)
-
-        self.worker.finished.connect(self.thread.quit)
-        self.worker.finished.connect(self.worker.deleteLater)
-        self.thread.finished.connect(self.thread.deleteLater)
-        self.worker.progress.connect(self.reportProgress)
-        # Step 6: Start the thread
-        self.thread.start()
-
-        # Final resets
-        self.pushButton_7.setEnabled(False)
-        self.thread.finished.connect(
-            lambda: self.pushButton_7.setEnabled(True)
-        )
-        self.thread.finished.connect(
-            lambda: self.stepLabel.setText("Long-Running Step: 0")
-        )
-
-    def stop_thread(self):
-
-        self.worker.stop()
-        #self.thread.quit()
-   
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    Dialog = QtWidgets.QDialog()
-    ui = Ui_Dialog()
-    ui.setupUi(Dialog)
-    Dialog.show()
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    demo = MainWidget()
+    demo.show()
     sys.exit(app.exec_())

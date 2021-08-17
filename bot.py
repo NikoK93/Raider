@@ -89,7 +89,7 @@ class Raider():
             
         # Bot status
         self.IDLE = 1
-
+        self.ON = 1
         # Market refresh status
         self.market_refresh = None
 
@@ -132,7 +132,17 @@ class Raider():
         self.get_status()
 
     def main_loop(self):
+        '''
+        while self.ON:
 
+            if len(self.actions) == 0:
+                print('No actions left, quiting')
+                break
+
+            #raid.main_loop()
+            time.sleep(10)
+            print("trying action...")
+        '''
         # Call action refresh 
         self.action_refresh()
 
@@ -148,8 +158,8 @@ class Raider():
                 # Write to database
                 self.database.update_value('UNM')
             
-        elif isNowInTimePeriod(dt.time(19,30), dt.time(23,30), dt.datetime.now().time()) and self.cb_MM == 0:
-             # Insert NM as priority 1
+        elif isNowInTimePeriod(dt.time(18,30), dt.time(23,30), dt.datetime.now().time()) and self.cb_MM == 0:
+            # Insert NM as priority 1
             if 'NM' not in self.actions:
                 self.actions.insert(0,'NM')
                 # Write to database
@@ -226,10 +236,10 @@ class Raider():
                 arena.go_to_arena()
 
                 time.sleep(1)
- 
+
                 print('Bot: IDLE')
                 self.IDLE = 1
-                 
+                
 
             elif action == 'tag_arena':
 
@@ -299,19 +309,20 @@ class Raider():
                 time.sleep(1)
                 print('Bot: IDLE')
                 self.IDLE = 1
-               
+                
 
-raid = Raider(account='raid3', leveling=True, dungeon='dragon', dt_difficulty='hard', action_one_time=False, gem_refill=False, star_leveling=2)
+if __name__ == '__main__':
 
-while True:
+    raid = Raider(account='raid3', leveling=True,  dungeon='minotaur', dt_difficulty='hard', action_one_time=False, gem_refill=False, star_leveling=3)
+    while True:
 
-    if len(raid.actions) == 0:
-        print('No actions left, quiting')
-        break
+        if len(raid.actions) == 0:
+            print('No actions left, quiting')
+            break
 
-    raid.main_loop()
-    time.sleep(30)
-    print("trying action...")
+        raid.main_loop()
+        time.sleep(30)
+        print("trying action...")
 
 
 

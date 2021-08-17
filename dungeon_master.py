@@ -32,7 +32,7 @@ class Dungeon():
 
         self.potions_keeps = ['force', 'spirit', 'magic', 'void', 'arcane']
         self.dungeons = {'dragon':20,
-                        'spider':20,
+                        'spider':24,
                         'ice_golem':24,
                         'fire_knight':20,
                         'minotaur':15}
