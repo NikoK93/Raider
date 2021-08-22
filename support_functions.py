@@ -136,6 +136,11 @@ def go_to_stage(stage):
 
         adjusted_click(483.0, 281.5)
 
+def check_if_no_aura():
+
+    if pyautogui.locateOnScreen('./images/no_aura.png', confidence=0.8) != None:
+        locate_and_click('no_aura', conf = 0.8)
+
 def training_data_utils():
 
     

@@ -8,13 +8,6 @@ import time
 import numpy as np
 import win32gui
 
-from windowcapture_modified import WindowCapture as WC
-from windowcapture import WindowCapture
-from vision import Vision
-
-import pytesseract
-tes_path = pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-
 from support_functions import go_to_base, locate_and_click, adjusted_click, adjusted_move, get_center, go_to_stage
 import database
 
@@ -328,6 +321,11 @@ class AutoLeveler():
 
         pyautogui.press('esc')
         time.sleep(20)
+        # Select difficulty, default = brutal
+        adjusted_click(-507.0, 318.5)
+        time.sleep(2)
+        adjusted_click(-507.0, 200.5)
+        time.sleep(2)
         go_to_stage(3)
         time.sleep(2)
 
@@ -373,8 +371,7 @@ class AutoLeveler():
 
         if pyautogui.locateOnScreen('./images/no_aura.png', confidence=0.8) != None:
             locate_and_click('no_aura', conf = 0.8)
-            time.sleep(2)
-            locate_and_click('start_leveling', conf=0.7)
+
 
         if self.STATE == 1:
             while self.STATE == 1:

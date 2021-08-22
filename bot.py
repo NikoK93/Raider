@@ -1,6 +1,8 @@
 import time
 import numpy as np
 import datetime as dt
+import sys
+import argparse
 
 from pyautogui import run
 
@@ -24,13 +26,26 @@ GAME_RESOLUTION = (1280, 720)
 
 '''
 
+parser = argparse.ArgumentParser('Bot configuration')
+parser.add_argument('-c','--account', type=str)
+parser.add_argument('-u','--dungeon', type=str)
+parser.add_argument('-a', '--action', type=str)
+parser.add_argument('-l','--leveling', action='store_true')
+parser.add_argument('-e','--energy_spender_last', action='store_true')
+parser.add_argument('-o','--action_one_time', action='store_true')
+parser.add_argument('-g','--gem_refill', action='store_true')
+parser.add_argument('-d','--dungeon_runs', type=int, default=None)
+parser.add_argument('-s','--star_leveling', type=int, default=2)
+parser.add_argument('-t','--dt_difficutly', type=str, default='hard')
+args = parser.parse_args()
+
 class Raider():
 
     def __init__(self, account, dungeon=None, energy_spender_last=False, leveling=False, dungeon_runs=None, gem_refill=False, action=None, action_one_time=False, star_leveling=2,  dt_difficulty='normal'):
 
         # Get center and open raid
-        self.CENTER_POSITION = open_raid()
-
+        #self.CENTER_POSITION = open_raid()
+        print(dt_difficulty)
         # Some default actions
         self.actions = ['arena', 'tag_arena', 'FW', 'doom_tower','mini_routine']
         #self.actions = ['arena']
@@ -69,6 +84,7 @@ class Raider():
         self.leveling = leveling
 
         # Choosing energy spender, and inserting it into actions stack at index 0
+        #if not action:
         if self.leveling:
             if energy_spender_last:
                 self.actions.append('leveling')
@@ -110,6 +126,29 @@ class Raider():
         # Get data about states
         self.get_status()
 
+        # Print arguments
+        print(self.account)
+        print(f"Chosen dungeon: {dungeon}")
+        print(f"Energy spender last: {self.energy_spender_last}")
+        print(f"Leveling status: {self.leveling}")
+        if action:
+            print(f"Action chosen: {action}")
+
+        #self.run()
+    
+    def run(self):
+
+        while True:
+
+            if len(self.actions) == 0:
+                print('No actions left, quiting')
+                break
+
+        self.main_loop()
+        time.sleep(30)
+        print("trying action...")
+
+
     def get_status(self):
         
         self.cb_UMM = self.database.get_posts(difficulty='UNM')
@@ -130,6 +169,7 @@ class Raider():
                     self.actions.insert(0,'routine_market_refresh')
 
         self.get_status()
+    
 
     def main_loop(self):
         '''
@@ -167,7 +207,8 @@ class Raider():
 
         elif self.user_action != None:
             #action = self.user_action
-            self.actions.insert(0, self.user_action)
+            ac = self.user_action.strip()
+            self.actions.insert(0, ac)
 
         # Select action from index 0
         action = self.actions[0]
@@ -182,6 +223,7 @@ class Raider():
         
         print(self.actions)
 
+        #sys.stdout.write(f"Executing {action}...")
         print(f"Executing {action}...")
         
         # Make sure the bot is idle
@@ -313,7 +355,16 @@ class Raider():
 
 if __name__ == '__main__':
 
-    raid = Raider(account='raid3', leveling=True,  dungeon='minotaur', dt_difficulty='hard', action_one_time=False, gem_refill=False, star_leveling=3)
+    #raid = Raider(account=sys.argv[1], dungeon=sys.argv[2], action=sys.argv[3])
+    
+    #if args.action:
+    #    raid = Raider(account=args.account, dungeon=args.dungeon, action=args.action)
+    #else:
+    raid = Raider(account=args.account, dungeon=args.dungeon, action=args.action, leveling=args.leveling, 
+        dungeon_runs=args.dungeon_runs, star_leveling=args.star_leveling, 
+        energy_spender_last=args.energy_spender_last, gem_refill=args.gem_refill, dt_difficulty=args.dt_difficutly,
+        action_one_time=args.action_one_time)
+
     while True:
 
         if len(raid.actions) == 0:

@@ -6,17 +6,13 @@ from functools import partial
 import time
 import numpy as np
 import win32gui
+import argparse
 
 from clan_boss import unm_custom, nightmare_custom
 from support_functions import adjusted_move, get_difference
 
-from windowcapture import WindowCapture
-from vision import Vision
-import pytesseract
-tes_path = pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 import timeit
-
-from support_functions import locate_and_click, get_center, go_to_base, adjusted_click, click_element, go_to_stage, adjusted_move
+from support_functions import locate_and_click, get_center, go_to_base, adjusted_click, click_element, go_to_stage, adjusted_move, check_if_no_aura
 
 
 
@@ -31,10 +27,10 @@ class Dungeon():
         self.dt_difficulty = dt_difficulty
 
         self.potions_keeps = ['force', 'spirit', 'magic', 'void', 'arcane']
-        self.dungeons = {'dragon':20,
+        self.dungeons = {'dragon':24,
                         'spider':24,
                         'ice_golem':24,
-                        'fire_knight':20,
+                        'fire_knight':24,
                         'minotaur':15}
 
         self.game_runs = 0
@@ -259,7 +255,7 @@ class Dungeon():
     def get_defualt_stage(self, dungeon):
 
         if dungeon in self.potions_keeps:
-            return 20
+            return 12
         else:
             return self.dungeons[dungeon]
 
@@ -302,6 +298,9 @@ class Dungeon():
                 
         # Start the game
         locate_and_click('minotaur_start', conf=0.6)
+        
+        # Check if no aura 
+        check_if_no_aura()
 
         # Main loop
         if self.STATE == 1:
