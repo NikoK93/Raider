@@ -72,7 +72,7 @@ class AutoLeveler():
 
         adjusted_click(505.0, 310.5)
         time.sleep(2)
-        if pyautogui.locateOnScreen('./images/xp_boost_on.png', confidence=0.9) != None:
+        if pyautogui.locateOnScreen('./images/xp_boost_on.png', confidence=0.7) != None:
             print('XP buff on')
             return True
         else:

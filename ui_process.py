@@ -4,38 +4,12 @@ from PyQt5.QtCore import QProcess
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 import sys
-import bot_test
 import time
+import bot
 import random
 import argparse
 import multiprocessing
 
-
-class Worker(QObject):
-
-    finished = pyqtSignal()
-    progress = pyqtSignal(int)
-
-    run = True
-
-    def run_bot(self):
-
-        raid = bot_test.Raider('raid2', 'spider', action='arena')
-
-        if self.run == False:
-
-            raid.ON = 1
-            raid.IDLE = 1
-
-        while self.run:
-
-            if len(raid.actions) == 0:
-                print('No actions left, quiting')
-                break
-
-            raid.main_loop()
-            time.sleep(30)
-            print("trying action...")
 
 class MainWindow(QMainWindow):
 
@@ -53,7 +27,7 @@ class MainWindow(QMainWindow):
 
         # Dungeons
         self.cb = QComboBox()
-        self.cb.addItems(['dragon', 'spider', 'ice_golem', 'fire_knight'])
+        self.cb.addItems(['minotaur','dragon', 'spider', 'ice_golem', 'fire_knight'])
         self.cb.activated[str].connect(self.onSelected)
 
         self.cb_dt = QComboBox()
@@ -93,10 +67,6 @@ class MainWindow(QMainWindow):
         self.energy_spender_last = False
         self.action_one_time = False
         self.dungeon_runs = 0
-
-        self.thread = QThread()
-        self.thread.setTerminationEnabled(enabled=True)
-        self.process = QProcess()
 
         # Add widgets
         l = QVBoxLayout()
@@ -173,7 +143,7 @@ class MainWindow(QMainWindow):
 
         init = ["-u", 'bot.py'] 
 
-        init.append('-c raid2')
+        init.append('-c raid3')
         init.append(f'-u {self.dungeon}')
 
         if self.action:
@@ -199,40 +169,18 @@ class MainWindow(QMainWindow):
 
     def start_process(self):
         if not self.p:
-            
-              # No process running.
-                    # Step 2: Create a QThread object
-            
-            # Step 3: Create a worker object
-            self.worker = Worker()
-            # Step 4: Move worker to the thread
-            self.worker.moveToThread(self.thread)
-            # Step 5: Connect signals and slots
-            self.thread.started.connect(self.worker.run_bot)
-            self.worker.finished.connect(self.thread.quit)
-            self.worker.finished.connect(self.worker.deleteLater)
-            self.thread.finished.connect(self.thread.deleteLater)
 
-            # Step 6: Start the thread
-            self.thread.start()
-     
-            '''
-            self.worker = Worker()
             self.message("Executing process")
             self.p = QProcess()  # Keep a reference to the QProcess (e.g. on self) while it's running.
             self.p.readyReadStandardOutput.connect(self.handle_stdout)
             self.p.readyReadStandardError.connect(self.handle_stderr)
             self.p.stateChanged.connect(self.handle_state)
             self.p.finished.connect(self.process_finished)  # Clean up once complete.
-            #if self.action == None:
-            #    self.p.start("python", ["-u", 'bot.py', 'raid3', self.dungeon, "-l", f'-d {50}'])
-            #else:
-            #self.p.start("python", ["-u", 'bot.py', 'raid3', self.dungeon, f"-a {self.action}"])
+
             init = self.construct_init()
-            
-            #self.p.start("python", init)
-            self.p.start(self.worker.run_bot)
-            '''
+            self.p.start("python", init)
+
+     
     def slotStart(self):
         self.btn.setEnabled(False)
         self.start_process()
@@ -244,12 +192,9 @@ class MainWindow(QMainWindow):
         self.btn_stop.setEnabled(True)
 
     def stopExecuting(self):
-        print('Stoping')
-        self.worker.run_bot = False
-        #self.worker.run = False
-        #self.thread.quit()
-        #if self.p:
-        #    self.p.kill()
+        print("Quiting actions")
+        if self.p:
+            self.p.kill()
 
     def handle_stderr(self):
         data = self.p.readAllStandardError()

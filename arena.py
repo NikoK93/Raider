@@ -69,17 +69,17 @@ class Arena():
                     time.sleep(2)
                     
                     # Check for defeat
-                    if pyautogui.locateOnScreen('./images/defeat_arena.png') != None:
+                    if pyautogui.locateOnScreen('./images/defeat_arena.png', confidence=0.7) != None:
                         print('Lost game.')
                         pyautogui.press('esc')
                         time.sleep(2)
                         if self.arena_type != 'classic':
                             pyautogui.press('esc')
                             time.sleep(1)
-                            if pyautogui.locateOnScreen('./images/tag_arena_refresh.png'):
+                            if pyautogui.locateOnScreen('./images/tag_arena_refresh.png', confidence=0.7):
                                 locate_and_click('tag_arena_refresh')
                                 break
-                        if pyautogui.locateOnScreen('./images/refresh_arena_classic.png') != None:
+                        if pyautogui.locateOnScreen('./images/refresh_arena_classic.png', confidence=0.7) != None:
                             locate_and_click('refresh_arena_classic')
                             break
                         else:
@@ -87,7 +87,7 @@ class Arena():
                             break
 
                     # Check for victory
-                    elif pyautogui.locateOnScreen('./images/victory_arena.png') != None:
+                    elif pyautogui.locateOnScreen('./images/victory_arena.png', confidence=0.7) != None:
                         pyautogui.press('esc')
                         time.sleep(3)
                         if self.arena_type != 'classic':

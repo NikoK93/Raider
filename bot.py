@@ -47,7 +47,7 @@ class Raider():
         #self.CENTER_POSITION = open_raid()
         print(dt_difficulty)
         # Some default actions
-        self.actions = ['arena', 'tag_arena', 'FW', 'doom_tower','mini_routine']
+        self.actions = ['arena', 'FW', 'tag_arena','doom_tower','mini_routine']
         #self.actions = ['arena']
         # Action which will not be appended and reapeated
         self.daily_action = ['UNM', 'NM', 'routine', 'routine_market_refresh']
@@ -211,7 +211,7 @@ class Raider():
             self.actions.insert(0, ac)
 
         # Select action from index 0
-        action = self.actions[0]
+        action = self.actions[0].strip()
         # Slice actions to remove the first element from priority queue
         self.actions = self.actions[1:]
         # Moving selected action to the bottom of the priority queue

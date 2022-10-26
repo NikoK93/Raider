@@ -1,0 +1,7 @@
+numpy==1.21.4
+opencv_python==4.5.4.60
+Pillow==9.2.0
+PyAutoGUI==0.9.53
+PyQt5==5.15.7
+pywin32==227
+win32gui==221.6
